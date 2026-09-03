@@ -302,3 +302,23 @@ targets:
   url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
   max_price: 2200
   enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-16-%E7%8E%8B%E8%9B%87%E9%9E%AD%E5%B0%BE-%E9%9A%A8%E6%A9%9F%E5%BC%B7%E5%8C%96%E7%B5%84-10008187.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
+  max_price: 2200
+  enabled: true
