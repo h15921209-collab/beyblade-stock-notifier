@@ -1,0 +1,135 @@
+{
+  "last_updated": "2026-09-04 01:25",
+  "categories": {
+    "🏆 論壇社群神物款": [
+      {
+        "model": "UX-03",
+        "name": "魔導神杖 (Wizard Rod)",
+        "desc": "賽事長期統治級 T0 軸心神物，持久防禦雙絕頂",
+        "official_price": 550
+      },
+      {
+        "model": "BX-35",
+        "name": "隨機強化組Vol.4 (黑鳳凰羽翼)",
+        "desc": "社群超人氣稀有防禦刃，抽率極低的神物",
+        "official_price": 399
+      },
+      {
+        "model": "BX-23",
+        "name": "鳳凰飛翼 (Phoenix Wing)",
+        "desc": "金屬塗裝重裝甲，超強外側離心力主力攻擊刃",
+        "official_price": 399
+      },
+      {
+        "model": "UX-04",
+        "name": "戰鬥白龍 (Aero Pegasus / Dran Dagger)",
+        "desc": "極限衝擊超人氣款式，比賽常勝攻擊軸心",
+        "official_price": 550
+      },
+      {
+        "model": "UX-21",
+        "name": "三陀螺對戰組 (巨神/狂暴組合)",
+        "desc": "社群必買進階實戰套組，配件極度實用",
+        "official_price": 550
+      },
+      {
+        "model": "UX-15",
+        "name": "超加速特化型戰鬥陀螺",
+        "desc": "高階賽事出賽率極高的特化新主流",
+        "official_price": 550
+      }
+    ],
+    "🔥 UX 最新獨特系列": [
+      {
+        "model": "UX-17",
+        "name": "Beyblade X   隕星龍騎士 UX-17 系列 美版3-70J 附拉繩發射器",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 550)",
+        "official_price": 550,
+        "tier": "NEW"
+      },
+      {
+        "model": "UX-20",
+        "name": "UX-20 榮耀武神LF (台版) + NS 巴蘭的異想奇境 中文版 (國際版)",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 550)",
+        "official_price": 550,
+        "tier": "NEW"
+      },
+      {
+        "model": "UX-19",
+        "name": "UX-19 子彈獅鷲H (台版) + Q版 魔法世界 玻璃獸 娃娃(隨機款)X1",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 550)",
+        "official_price": 550,
+        "tier": "NEW"
+      },
+      {
+        "model": "UX-11",
+        "name": "UX-11 衝擊龍神 豪華組 (台版) + Amiibo 卡比&傳送之星 卡比的馭天飛行",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 1498)",
+        "official_price": 1498,
+        "tier": "NEW"
+      }
+    ],
+    "🌀 BX & CX 強勢主力款": [
+      {
+        "model": "CX-18",
+        "name": "CX-18-3 黑色 腕龍鞭打 Nr軸 確定版強化組 BB09617",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 650)",
+        "official_price": 650,
+        "tier": "NEW"
+      }
+    ],
+    "🎁 限定紀念與對戰配件": [
+      {
+        "model": "BX-00",
+        "name": "BX-00 蒼龍神劍 V2 3-60F 攻擊型  台版附QRCODE",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 1250)",
+        "official_price": 1250,
+        "tier": "NEW"
+      },
+      {
+        "model": "CX-00",
+        "name": "TAKARATOMY   X世代 CX-00 雄鹿鹿角 B2-60D 限定版 陀螺",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 2980)",
+        "official_price": 2980,
+        "tier": "NEW"
+      },
+      {
+        "model": "BXG-42",
+        "name": "TAKARATOMY   X世代 BXG-42 夜藍騎士圓甲 限定版 藍色小籠包 UX-00",
+        "desc": "官方最新上市款式 (原廠定價 NT$ 550)",
+        "official_price": 550,
+        "tier": "NEW"
+      },
+      {
+        "model": "BX-25",
+        "name": "戰鬥陀螺X 專業收納手提包",
+        "desc": "全台常態缺貨手提箱神物",
+        "official_price": 1199
+      },
+      {
+        "model": "BX-37",
+        "name": "雙重極限衝擊戰鬥盤豪華組",
+        "desc": "雙軌道超加速對戰套裝",
+        "official_price": 1498
+      },
+      {
+        "model": "BX-07",
+        "name": "極限對戰盤 (單盤)",
+        "desc": "標準 X 賽事必備加速齒輪盤",
+        "official_price": 750
+      },
+      {
+        "model": "BXG-01",
+        "name": "復刻紀念款 烈焰飛鳳S",
+        "desc": "初代爆轉陀螺經典復刻限定版",
+        "official_price": 750
+      },
+      {
+        "model": "BXG-04",
+        "name": "復刻紀念款 銀牙烈虎S",
+        "desc": "初代爆轉白虎復刻限定版",
+        "official_price": 750
+      }
+    ]
+  }
+}

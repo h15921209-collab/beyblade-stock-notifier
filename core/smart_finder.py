@@ -4,6 +4,16 @@ from typing import List, Dict, Any, Optional, Tuple
 import requests
 from bs4 import BeautifulSoup
 from core.msrp import get_official_price_and_limit
+from core.meta_updater import load_hot_picks, update_hot_picks_from_sources
+
+def get_current_hot_picks_data() -> Tuple[Dict[str, Any], str]:
+    """取得當前熱門神物分類資料與最後更新時間"""
+    data = load_hot_picks()
+    if data and "categories" in data:
+        return data["categories"], data.get("last_updated", "最新")
+    # 若檔案不存在則現場更新一次
+    updated = update_hot_picks_from_sources()
+    return updated.get("categories", HOT_PICKS), updated.get("last_updated", "剛才")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"

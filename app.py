@@ -8,7 +8,8 @@ from core.github_sync import GitHubSync
 import discover_targets
 
 from core.msrp import get_official_price_and_limit
-from core.smart_finder import smart_cross_search, HOT_PICKS, sanitize_url, verify_official_channel
+from core.smart_finder import smart_cross_search, sanitize_url, verify_official_channel, get_current_hot_picks_data
+from core.meta_updater import update_hot_picks_from_sources
 
 # 頁面配置
 st.set_page_config(
@@ -224,13 +225,31 @@ with tab2:
                 st.info("查無符合官方直營賣場，請嘗試更換型號（如 BX-23、UX-01）或縮短關鍵字。")
 
     # --------------------------------------------------------------------------
-    # Sub-tab 2: 社群熱門神物一鍵導入
+    # Sub-tab 2: 社群熱門神物一鍵導入 (支援定時與即時自動更新)
     # --------------------------------------------------------------------------
     with sub_t2:
-        st.markdown("#### 🏆 玩家社群與比賽熱門神物清單")
+        hot_categories, last_update_time = get_current_hot_picks_data()
+
+        col_head1, col_head2 = st.columns([3, 2])
+        with col_head1:
+            st.markdown("#### 🏆 玩家社群與比賽熱門神物情報庫")
+            st.caption(f"🕒 情報庫最後更新時間：`{last_update_time}` ｜ 覆蓋 T0 賽事戰刃、最新 UX/BX 與限定配件")
+        with col_head2:
+            st.write("")
+            if st.button("🔄 立即連線全網更新情報庫", type="secondary"):
+                with st.spinner("正在連線麗嬰國際、反斗城與社群掃描最新發售型號..."):
+                    updated_data = update_hot_picks_from_sources()
+                    # 同步更新 GitHub 倉庫中的 hot_picks.json
+                    if GITHUB_TOKEN:
+                        gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
+                        with open("data/hot_picks.json", "r", encoding="utf-8") as f:
+                            gh.update_file_content("data/hot_picks.json", f.read(), "data: update hot picks meta database")
+                    st.success("🎉 熱門神物清單已成功更新至最新發售情報！")
+                    st.rerun()
+
         st.caption("點擊按鈕自動跨官方通路為該款陀螺搜尋可購買的賣場並加入追蹤！")
 
-        for cat_name, items in HOT_PICKS.items():
+        for cat_name, items in hot_categories.items():
             with st.expander(f"{cat_name} ({len(items)} 款精選)", expanded=True if "社群神物" in cat_name else False):
                 for idx, pick in enumerate(items):
                     p_col1, p_col2, p_col3 = st.columns([3, 2, 2])
