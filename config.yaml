@@ -10,28 +10,6 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
-- name: C31N1330 電池適用(保固更久)  UX32LA,UX32LN系列,UX32LA-R300,RX32LA-R301,UX32LA-R302,UX32LA-R303,UX32LA-R304,UX32LA-R305,UX32LA-R306,UX32LA-R308,UX32LA-R309,UX32LA-R310,C3IN1330,C31PO95,0B20-00-70200,BX32LA
-  url: https://24h.pchome.com.tw/prod/QAAH2V-A900A8RC8
-  max_price: 605
-  enabled: true
-- name: C31N1330  電池適用(保固更久)  UX32LA UX32LN BX32LA X32LN BX32 UX32 X32 UX32LA-R300
-    ~ UX32LA-R306 UX32LA-R308 ~ UX32LA-R310 UX32LN-R401 ~ UX32LN-R407 UX32LN-R410
-    UX32LN-R411 0B20-00-70200 C31PO95
-  url: https://24h.pchome.com.tw/prod/DCABIZ-A900A8RAV
-  max_price: 989
-  enabled: true
-- name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-00 蒼穹龍神透明版 透明龍神
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K8UL5
-  max_price: 5038
-  enabled: true
-- name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 BX-00 5-60GF軸 鮫鯊鋒鰭 BXG-06 限定版 深海藍
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K6GN8
-  max_price: 825
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X 世代 BX-00 限定版 黑蒼穹龍騎士 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JP9
-  max_price: 2629
-  enabled: true
 - name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
   max_price: 439
@@ -375,6 +353,26 @@ targets:
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
   max_price: 2420
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
+  max_price: 2420
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
+  max_price: 2420
+  enabled: true
+- name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-18 X旋風發射器 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K6GNN
+  max_price: 385
+  enabled: true
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-28 旋風發射器 右迴旋(白色) 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CZ
+  max_price: 1419
+  enabled: true
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-28 旋風發射器 右迴旋(白色) 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CZ
+  max_price: 1419
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
