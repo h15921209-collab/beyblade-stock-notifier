@@ -10,6 +10,10 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X 世代 CX-18 腕龍鞭打 隨機強化組 盲包
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SN4
+  max_price: 715
+  enabled: true
 - name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
   max_price: 439
