@@ -362,3 +362,11 @@ targets:
   url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
   max_price: 2420
   enabled: true
+- name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-18 X旋風發射器 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K6GNN
+  max_price: 385
+  enabled: true
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-28 旋風發射器 右迴旋(白色) 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CZ
+  max_price: 1419
+  enabled: true
