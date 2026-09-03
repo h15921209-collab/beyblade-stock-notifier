@@ -7,6 +7,8 @@ from notifier import LineNotifier
 from core.github_sync import GitHubSync
 import discover_targets
 
+from core.msrp import get_official_price_and_limit
+
 # 頁面配置
 st.set_page_config(
     page_title="戰鬥陀螺X 雲端監控管理後台",
@@ -90,11 +92,19 @@ with tab1:
     st.subheader(f"目前監控清單 ({len(targets)} 款)")
     search_kw = st.text_input("🔍 搜尋商品名稱或網址關鍵字（例如：BX-35、反斗城、收納包）：", "")
 
-    col_btn1, col_btn2 = st.columns([1, 4])
+    col_btn1, col_btn2, col_btn3 = st.columns([1.5, 2, 2.5])
     with col_btn1:
         if st.button("💾 儲存並同步至雲端 GitHub", type="primary"):
             save_config(cfg, sync_github=True)
             st.success("✅ 設定已成功儲存並同步推送到 GitHub 雲端！")
+    with col_btn2:
+        if st.button("🛡️ 一鍵重算為「官方原價+10%」"):
+            for t in targets:
+                _, max_p = get_official_price_and_limit(t.get("name", ""), fallback_price=t.get("max_price"))
+                t["max_price"] = max_p
+            save_config(cfg, sync_github=True)
+            st.success("🎉 全部商品已全數設定為「官方原價 + 10%」上限！")
+            st.rerun()
 
     filtered_indices = []
     for idx, t in enumerate(targets):
@@ -107,7 +117,8 @@ with tab1:
 
     for idx in filtered_indices:
         t = targets[idx]
-        with st.expander(f"{'✅' if t.get('enabled', True) else '⏸️'} {t.get('name', '未命名商品')}"):
+        off_p, _ = get_official_price_and_limit(t.get("name", ""), fallback_price=t.get("max_price"))
+        with st.expander(f"{'✅' if t.get('enabled', True) else '⏸️'} {t.get('name', '未命名商品')} (官方原價: NT$ {off_p} | 上限: NT$ {t.get('max_price')})"):
             c1, c2, c3 = st.columns([3, 1, 1])
             with c1:
                 t["name"] = st.text_input("品名", value=t.get("name", ""), key=f"name_{idx}")
@@ -142,7 +153,9 @@ with tab2:
             if detected_info.status != StockStatus.ERROR:
                 st.success(f"辨識成功！通路：{detected_info.platform_name} | 現貨狀態: {detected_info.status.value}")
                 st.session_state["prefill_name"] = detected_info.title
-                st.session_state["prefill_price"] = int(detected_info.price * 1.2) if detected_info.price else 1500
+                off_p, max_p = get_official_price_and_limit(detected_info.title, fallback_price=detected_info.price)
+                st.session_state["prefill_price"] = max_p
+                st.info(f"💡 官方參考原價: NT$ {off_p} ➔ 自動鎖定防黃牛上限 (+10%): **NT$ {max_p}**")
             else:
                 st.warning(f"自動辨識未獲取完整資料: {detected_info.error_msg}")
 

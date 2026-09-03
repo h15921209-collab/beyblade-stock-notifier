@@ -6,6 +6,7 @@ import requests
 import yaml
 from bs4 import BeautifulSoup
 from scrapers import PChomeScraper, ToysrusScraper, FunboxScraper
+from core.msrp import get_official_price_and_limit
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("AutoDiscover")
@@ -39,10 +40,11 @@ def search_pchome_beyblade() -> list:
                         if any(k in name_upper for k in ["BEYBLADE", "陀螺", "BX-", "UX-", "CX-", "發射器", "戰鬥盤"]):
                             seen_ids.add(pid)
                             prod_url = f"https://24h.pchome.com.tw/prod/{pid}"
+                            _, max_p = get_official_price_and_limit(name, fallback_price=price)
                             found.append({
                                 "name": name,
                                 "url": prod_url,
-                                "max_price": int(price * 1.25) if price else 2000, # 允許原價微幅浮動
+                                "max_price": max_p,
                                 "enabled": True
                             })
         except Exception as e:
@@ -68,10 +70,11 @@ def search_toysrus_beyblade() -> list:
                     if full_url not in seen_urls:
                         seen_urls.add(full_url)
                         title = a.text.strip() or "玩具反斗城 戰鬥陀螺X商品"
+                        _, max_p = get_official_price_and_limit(title, fallback_price=1500)
                         found.append({
                             "name": title,
                             "url": full_url,
-                            "max_price": 2000,
+                            "max_price": max_p,
                             "enabled": True
                         })
     except Exception as e:
@@ -98,10 +101,11 @@ def search_funbox_beyblade() -> list:
                     if full_url not in seen_urls:
                         seen_urls.add(full_url)
                         title = a.text.strip() or "麗嬰國際 戰鬥陀螺X"
+                        _, max_p = get_official_price_and_limit(title, fallback_price=1500)
                         found.append({
                             "name": title,
                             "url": full_url,
-                            "max_price": 1800,
+                            "max_price": max_p,
                             "enabled": True
                         })
     except Exception as e:
