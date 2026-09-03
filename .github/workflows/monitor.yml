@@ -37,5 +37,6 @@ jobs:
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          IS_MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           python main.py --check-once

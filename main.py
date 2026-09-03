@@ -19,6 +19,7 @@ def main():
     parser = argparse.ArgumentParser(description="戰鬥陀螺X (Beyblade X) 缺貨有貨即時 LINE 通知系統")
     parser.add_argument("--config", default="config.yaml", help="設定檔路徑 (預設: config.yaml)")
     parser.add_argument("--check-once", action="store_true", help="執行單次巡檢後退出 (適合 GitHub Actions 或 Cron)")
+    parser.add_argument("--manual", action="store_true", help="標記為手動巡檢，若無找到原價陀螺亦發送回報")
     parser.add_argument("--test-line", action="store_true", help="發送 LINE 測試連線訊息")
     parser.add_argument("--test-url", help="測試單一商品網址之爬蟲解析結果")
     parser.add_argument("--daemon", action="store_true", help="啟動 24 小時背景常駐監控模式")
@@ -66,7 +67,7 @@ def main():
     if args.check_once:
         from core import MonitorEngine
         engine = MonitorEngine(config_path=config_file)
-        engine.check_all_once()
+        engine.check_all_once(is_manual=args.manual if args.manual else None)
         return
 
     # 4. 常駐背景模式 (預設行為)

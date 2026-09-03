@@ -37,7 +37,7 @@ class MonitorEngine:
         state_file = mon_cfg.get("state_file", "state.json")
         self.tracker = StateTracker(state_file=state_file, notify_on_initial_stock=self.notify_on_initial)
 
-        self.last_heartbeat_date: Optional[str] = None
+        self.last_heartbeat_date: Optional[str] = self.tracker.state.get("last_heartbeat_date")
 
     def load_config(self):
         if not os.path.exists(self.config_path):
@@ -50,11 +50,14 @@ class MonitorEngine:
         targets = self.config.get("targets", [])
         return [t for t in targets if t.get("enabled", True)]
 
-    def check_all_once(self) -> List[ProductInfo]:
+    def check_all_once(self, is_manual: Optional[bool] = None) -> List[ProductInfo]:
         """執行一輪完整的商品庫存巡檢"""
+        from datetime import timezone, timedelta
+
         targets = self.get_targets()
         logger.info(f"開始執行本輪巡檢，共監控 {len(targets)} 項商品...")
         results = []
+        notifications_sent = 0
 
         for idx, target in enumerate(targets, 1):
             url = target.get("url", "").strip()
@@ -74,15 +77,41 @@ class MonitorEngine:
                 if self.tracker.should_notify(target, info):
                     logger.info(f"  🔔 觸發 LINE 補貨推播通知: {info.title}")
                     self.notifier.send_stock_alert(info)
+                    notifications_sent += 1
 
             except Exception as e:
                 logger.error(f"檢查商品發生例外: {name} - {e}")
 
-            # 目標間隨機微延遲 1~2 秒，避免瞬間併發被判為 DDoS
+            # 目標間隨機微延遲 0.8~1.5 秒
             if idx < len(targets):
-                time.sleep(random.uniform(1.0, 2.0))
+                time.sleep(random.uniform(0.8, 1.5))
 
-        logger.info(f"本輪巡檢完成！共檢查 {len(results)} 項商品。")
+        logger.info(f"本輪巡檢完成！共檢查 {len(results)} 項商品，發送 {notifications_sent} 則補貨通知。")
+
+        # 判斷是否為手動巡檢
+        if is_manual is None:
+            is_manual = (
+                os.environ.get("IS_MANUAL_RUN", "").lower() in ("true", "1") or
+                os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
+            )
+
+        # 1. 若手動觸發且本輪無任何原價現貨 ➔ 發送手動巡檢完成回報！
+        if is_manual and notifications_sent == 0:
+            logger.info("手動巡檢完成但無原價現貨，發送手動完成回報卡片...")
+            self.notifier.send_digest_report(total_monitored=len(targets), is_manual=True)
+
+        # 2. 檢查每日早上 09:00 安心日報 (以台灣時間 UTC+8 計算)
+        tz_tw = timezone(timedelta(hours=8))
+        now_tw = datetime.now(tz_tw)
+        today_str = now_tw.strftime("%Y-%m-%d")
+
+        if now_tw.hour == 9 and self.last_heartbeat_date != today_str:
+            logger.info(f"觸發每日早上 09:00 安心日報 (台灣時間 {now_tw.strftime('%H:%M')})...")
+            self.notifier.send_digest_report(total_monitored=len(targets), is_manual=False)
+            self.last_heartbeat_date = today_str
+            self.tracker.state["last_heartbeat_date"] = today_str
+            self.tracker.save_state()
+
         return results
 
     def check_heartbeat(self):

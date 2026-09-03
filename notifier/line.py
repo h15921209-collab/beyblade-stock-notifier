@@ -181,18 +181,139 @@ class LineNotifier:
             return self.send_push([{"type": "text", "text": fallback_text}])
         return True
 
-    def send_heartbeat(self, total_monitored: int) -> bool:
-        """發送每日存活心跳回報"""
+    def send_digest_report(self, total_monitored: int, is_manual: bool = False) -> bool:
+        """發送未找到原價陀螺時的安心日報 / 手動巡檢完成回報"""
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-        msg = (
-            f"💚【戰鬥陀螺X 監控助手 - 每日健康回報】\n\n"
-            f"🤖 運作狀態：正常 24H 背景巡檢中\n"
-            f"🎯 監控數量：共監控 {total_monitored} 款正版通路商品\n"
-            f"🛡️ 涵蓋通路：麗嬰國際、蝦皮、Momo、PChome、反斗城、酷比樂、誠品\n"
-            f"⏱️ 回報時間：{now_str}\n\n"
-            f"祝您第一時間原價入手最新戰鬥陀螺！⚡"
+        report_title = "手動巡檢完成回報" if is_manual else "每日安心巡檢日報"
+        header_color = "#1E293B" if is_manual else "#0F172A"
+
+        flex_bubble = {
+            "type": "bubble",
+            "size": "mega",
+            "header": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": header_color,
+                "paddingAll": "16px",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": f"🌀 戰鬥陀螺X {report_title}",
+                        "color": "#38BDF8",
+                        "weight": "bold",
+                        "size": "lg"
+                    },
+                    {
+                        "type": "text",
+                        "text": f"回報時間: {now_str}",
+                        "color": "#94A3B8",
+                        "size": "xs",
+                        "margin": "xs"
+                    }
+                ]
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "margin": "md",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {"type": "text", "text": "監控品項", "color": "#64748B", "size": "sm", "flex": 2},
+                                    {"type": "text", "text": f"共 {total_monitored} 款官方正版", "wrap": True, "color": "#0F172A", "size": "sm", "flex": 4, "weight": "bold"}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {"type": "text", "text": "巡檢通路", "color": "#64748B", "size": "sm", "flex": 2},
+                                    {"type": "text", "text": "麗嬰國際 / 反斗城 / PChome 等", "wrap": True, "color": "#0F172A", "size": "sm", "flex": 4}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {"type": "text", "text": "原價現貨", "color": "#64748B", "size": "sm", "flex": 2},
+                                    {"type": "text", "text": "暫無 (全數缺貨或黃牛溢價中)", "wrap": True, "color": "#EF4444", "size": "sm", "flex": 4, "weight": "bold"}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#F8FAFC",
+                        "cornerRadius": "8px",
+                        "paddingAll": "10px",
+                        "margin": "md",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "🛡️ 雲端虛擬機 24H 定時巡檢在線！一有「官方原價+10%內現貨」立即搶購推播！",
+                                "color": "#475569",
+                                "size": "xs",
+                                "wrap": True
+                            }
+                        ]
+                    }
+                ]
+            },
+            "footer": {
+                "type": "box",
+                "layout": "vertical",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "button",
+                        "style": "primary",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "📱 開啟手機管理後台",
+                            "uri": "https://beyblade-stock.streamlit.app/"
+                        },
+                        "color": "#0284C7"
+                    }
+                ]
+            }
+        }
+
+        fallback_text = (
+            f"🌀【戰鬥陀螺X {report_title}】\n\n"
+            f"⏱️ 時間：{now_str}\n"
+            f"🎯 監控：共 {total_monitored} 款官方正版陀螺\n"
+            f"🔍 結果：各大官方通路目前「暫無原價現貨」（全數缺貨或黃牛溢價中）\n"
+            f"🛡️ 狀態：雲端 24H 巡邏守護中，一有正版原價補貨立即推播！\n\n"
+            f"👉 手機後台：https://beyblade-stock.streamlit.app/"
         )
-        return self.send_push([{"type": "text", "text": msg}])
+
+        messages = [
+            {
+                "type": "flex",
+                "altText": f"🌀 戰鬥陀螺X {report_title}：目前暫無原價現貨，持續蹲守中！",
+                "contents": flex_bubble
+            }
+        ]
+        success = self.send_push(messages)
+        if not success:
+            return self.send_push([{"type": "text", "text": fallback_text}])
+        return True
+
+    def send_heartbeat(self, total_monitored: int) -> bool:
+        """發送每日存活心跳回報（相容舊接口）"""
+        return self.send_digest_report(total_monitored, is_manual=False)
 
     def send_test_message(self) -> bool:
         """發送連線驗證測試訊息"""
