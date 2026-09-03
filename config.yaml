@@ -10,25 +10,25 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
-- name: 台達原裝  65W USBC TYPE-C  20V,3.25A,UX391UA,UX392,UX392FN,Q325,Q325UA,T303UA,UX392FA,UX435,UX435EG,UX370,UX370UA,UX390,UX390A,UX482,ADP-65DW
-    A,AC65-00,90XB04EN-MPW010
-  url: https://24h.pchome.com.tw/prod/DHABDK-A900C7WS6
-  max_price: 605
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
+  max_price: 439
   enabled: true
-- name: 65W USBC TYPEC 新款充電器適用  B9400CEA T303UA Q325UA Q325 UX390UA ZF3 ZenFone3 90XB04EN-MPW010
-    ZenFone3 ZF3 UX370 UX370UA UX390  UX391 UX391UA UX392 UX392FN B9450FA B5302 UX3402
-    UM3402 UX325 UX393 B7402F S435 B5402C
-  url: https://24h.pchome.com.tw/prod/QAAH36-A9009JFUO
-  max_price: 605
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-35 隨機強貨組 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPP
+  max_price: 439
   enabled: true
-- name: 65W USBC TYPE-C 新款充電器適用 ZenFone3 ZF3,UX390,UX390A,UX490U,Pro B9440UA,B9400,B9400CEA,B1400C,ZF3,UX370,UX370UA,UX390,UX390UA,UX391,UX391UA,UX392,ADP-65DW
-    A,AC65-00,90XB04EN-MPW010,UX3402,UM3402,UX325,UX393
-  url: https://24h.pchome.com.tw/prod/DHABDK-A900C2FE0
-  max_price: 605
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 悟空 傳奇版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHO
+  max_price: 439
   enabled: true
-- name: BEYBLADE X 戰鬥陀螺 UX-04 極限衝擊對戰組U (台版) + 一番賞小賞 X10 (隨機)
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB3M
-  max_price: 605
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 心靈之眼 中文版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHK
+  max_price: 439
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 高譚騎士 中文版 (國際版)
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IGZ
+  max_price: 439
   enabled: true
 - name: Funbox 官方限定商品
   url: https://shop.funbox.com.tw/products/tm07984
