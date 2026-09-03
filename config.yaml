@@ -10,6 +10,26 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
+  max_price: 439
+  enabled: true
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-35 隨機強貨組 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPP
+  max_price: 439
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 悟空 傳奇版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHO
+  max_price: 439
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 心靈之眼 中文版
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHK
+  max_price: 439
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 高譚騎士 中文版 (國際版)
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IGZ
+  max_price: 439
+  enabled: true
 - name: Funbox 官方限定商品
   url: https://shop.funbox.com.tw/products/tm07984
   max_price: 1650
