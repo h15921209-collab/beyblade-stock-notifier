@@ -10,25 +10,34 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
-- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
-  max_price: 439
+- name: TYPE-C TYPE C USB-C 45W 變壓器 充電器 電源線 ASUSUX370UA UX390UA  HPTPN-CA01 TPN-CA02
+    Spectre 13 X360 ELITE X2 1012 G1  TABLET ThinkPad X1  ADLX45UCCU2A DELLLatitude
+    11 5175 5179 Latitude 12 7275 9250
+  url: https://24h.pchome.com.tw/prod/DHABDK-A900FR2ZE
+  max_price: 605
   enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-35 隨機強貨組 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPP
-  max_price: 439
+- name: 65W 新款充電器19V 3.42A 適用  S333 S433 S533 K333 S533FA S533FL S533F  S433FA S433FL
+    S433JQ S433F S433J S333JA S333JP S333JQ S333J S533FA ADP-65AW A ADP-65JH DB N65W-02
+    A542 A542UR A542UQ X330F X330FL S330F UX463FA
+  url: https://24h.pchome.com.tw/prod/DHABDK-A900B7KP9
+  max_price: 605
   enabled: true
-- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 悟空 傳奇版
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHO
-  max_price: 439
+- name: 副廠變壓器 適用型號 UX370 UX390 UX390UA UX370UA Q325,Q325UA T303UA T305CA T302CA ADP-45GW
+    ADP-45EW A ADP-45EW B Latitude 11 5175 5179 12 7275 9250 TPN-CA01 TPN-CA02 副廠變壓器
+  url: https://24h.pchome.com.tw/prod/QAAH2V-A90099QVY
+  max_price: 605
   enabled: true
-- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 心靈之眼 中文版
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IHK
-  max_price: 439
+- name: 65W 19V 3.42A 充電器適用  BX31A BX31E BX31LA ADP-65AW A N65W-02 UX303 UX303LA UX303LN
+    X102BA X200LA X200MA X200CA X200LA X201 X201E X202 X202E  X441UV S14 S406UA R542UR
+    S510UQ S510UR X705MB X541SC X542UA UF334FL X507 X409 X409F UX433FN UX434
+  url: https://24h.pchome.com.tw/prod/QAAK1E-A9006QM2B
+  max_price: 605
   enabled: true
-- name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 高譚騎士 中文版 (國際版)
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9IGZ
-  max_price: 439
+- name: 65W USBC TYPE-C 充電器  B3404 B9400 B9440 B9450  UX325 UX371 UX393 UX363 UX490
+    UX425 S435 C302CA T3300 T3300KA T305CA UX371 UX371EA UX391U UX393 UX490 C101PA
+    C101P C101 C213 C213S C213SA C213SA-YS02 C101PA-DB02 B7402F S435 B5402C B5302
+  url: https://24h.pchome.com.tw/prod/DHABDK-A900GKZDB
+  max_price: 605
   enabled: true
 - name: Funbox 官方限定商品
   url: https://shop.funbox.com.tw/products/tm07984
@@ -292,6 +301,26 @@ targets:
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-16-%E7%8E%8B%E8%9B%87%E9%9E%AD%E5%B0%BE-%E9%9A%A8%E6%A9%9F%E5%BC%B7%E5%8C%96%E7%B5%84-10008187.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-16-%E7%8E%8B%E8%9B%87%E9%9E%AD%E5%B0%BE-%E9%9A%A8%E6%A9%9F%E5%BC%B7%E5%8C%96%E7%B5%84-10008187.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
+  max_price: 2200
+  enabled: true
+- name: 玩具反斗城 戰鬥陀螺X商品
+  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
   max_price: 2200
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
