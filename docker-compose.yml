@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  beyblade-monitor:
+    build: .
+    container_name: beyblade-stock-notifier
+    restart: unless-stopped
+    volumes:
+      # 掛載本地 config.yaml，隨時增刪商品網址，修改即時生效無須重包映像檔
+      - ./config.yaml:/app/config.yaml:ro
+      # 掛載 state.json，確保容器重啟後歷史狀態不遺失
+      - ./state.json:/app/state.json
+    environment:
+      - TZ=Asia/Taipei
+      # 亦可直接在此指定 LINE Token 與 User ID（若不想寫入 config.yaml）
+      # - LINE_CHANNEL_ACCESS_TOKEN=your_token_here
+      # - LINE_USER_ID=your_user_id_here
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

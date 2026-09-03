@@ -1,0 +1,87 @@
+# ==============================================================================
+# 戰鬥陀螺X (Beyblade X) 缺貨有貨即時監控軟體 - 設定檔範本
+# 複製本檔案為 config.yaml 並填入您的 LINE 設定與欲監控的商品網址
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. LINE Messaging API 推播設定
+# 申請教學請參閱 README.md（免費、完全無須月租費，每月提供免費推播額度）
+# ------------------------------------------------------------------------------
+line_notify:
+  # LINE Developers 後台核發的 Channel Access Token (Long-lived)
+  # 亦可透過環境變數 LINE_CHANNEL_ACCESS_TOKEN 注入
+  channel_access_token: "YOUR_LINE_CHANNEL_ACCESS_TOKEN_HERE"
+  
+  # 接收通知的 LINE 使用者 ID (格式如 U1234567890abcdef...)
+  # 亦可透過環境變數 LINE_USER_ID 注入
+  user_id: "YOUR_LINE_USER_ID_HERE"
+
+# ------------------------------------------------------------------------------
+# 2. 監控輪詢與防封鎖參數
+# ------------------------------------------------------------------------------
+monitor:
+  # 輪詢週期基準（單位：秒），預設 60 秒
+  interval_seconds: 60
+  
+  # 每次輪詢隨機浮動延遲（秒），避免固定時間發送請求被電商判定為機器人
+  jitter_min_seconds: 5
+  jitter_max_seconds: 15
+  
+  # 網路請求超時時間（秒）
+  request_timeout: 10
+  
+  # 狀態保存檔案（用於記憶上次狀態，重啟後不會重複推播已通知過的商品）
+  state_file: "state.json"
+  
+  # 第一次啟動時，若商品原本就為「現貨」，是否要發送推播（true: 發送, false: 略過）
+  notify_on_initial_stock: true
+  
+  # 每日存活心跳回報時間 (24小時制 HH:MM)
+  # 每天固定在此時間發送一則 LINE 訊息回報系統正常運作
+  heartbeat_time: "09:00"
+
+# ------------------------------------------------------------------------------
+# 3. 欲監控的正版商品網址清單 (支援 7 大官方/授權通路)
+# ------------------------------------------------------------------------------
+targets:
+  # 通路 1: 麗嬰國際官方購物網 (Funbox)
+  - name: "Funbox 官方限定商品"
+    url: "https://shop.funbox.com.tw/products/tm07984"
+    max_price: 1500
+    enabled: true
+
+  # 通路 2: PChome 24h 購物 (TAKARA TOMY / 麗嬰國際專區)
+  - name: "BX-25 戰鬥陀螺X專業收納包"
+    url: "https://24h.pchome.com.tw/prod/DEASR1-B900H2BID"
+    max_price: 1300
+    enabled: true
+
+  # 通路 3: 玩具反斗城台灣官網 (Toys R Us Taiwan)
+  - name: "BX-37 雙重極限衝擊戰鬥盤豪華組"
+    url: "https://www.toysrus.com.tw/zh-tw/beyblade-bx-37-dual-extreme-impact-combat-disk-deluxe-edition-10058492.html"
+    max_price: 1600
+    enabled: true
+
+  # 通路 4: Momo 購物網 (Funbox 麗嬰國際旗艦館)
+  - name: "Momo 戰鬥陀螺X專區商品"
+    url: "https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=12953255"
+    max_price: 1800
+    enabled: true
+
+  # 通路 5: 蝦皮商城 (麗嬰國際官方旗艦店)
+  - name: "蝦皮 Funbox 官方旗艦店熱門款"
+    url: "https://shopee.tw/product/42721867/25578850687"
+    max_price: 1500
+    enabled: true
+
+  # 通路 6: 酷比樂玩具專賣店
+  - name: "酷比樂戰鬥陀螺X商品"
+    url: "https://preorder.amuzinc.com/"
+    max_price: 1200
+    enabled: false
+
+  # 通路 7: 誠品線上 (Eslite)
+  - name: "誠品線上玩具專區"
+    url: "https://www.eslite.com/"
+    max_price: 1500
+    enabled: false
