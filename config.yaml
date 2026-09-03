@@ -2,7 +2,7 @@ line_notify:
   channel_access_token: lFpN63Hog/WYBq9iU9xJV036WSDtN3pdv9pTG3JoGjoD09jlWI//y01sWaZ4VS+j6IR0y7myzwssciMlM0mHWOJnNLM5f2fTAIF1ykxgtNz75Hd25tMSrh9rhIRV3/m1mnbxyjR1UYX2gv3cOmQsVgdB04t89/1O/w1cDnyilFU=
   user_id: U3fac860e1000bf3982f6c89cac18eb91
 monitor:
-  interval_seconds: 60
+  interval_seconds: 300
   jitter_min_seconds: 5
   jitter_max_seconds: 15
   request_timeout: 10
@@ -12,7 +12,7 @@ monitor:
 targets:
 - name: Funbox 官方限定商品
   url: https://shop.funbox.com.tw/products/tm07984
-  max_price: 1815
+  max_price: 1650
   enabled: true
 - name: BX-25 戰鬥陀螺X專業收納包
   url: https://24h.pchome.com.tw/prod/DEASR1-B900H2BID
@@ -24,19 +24,19 @@ targets:
   enabled: true
 - name: Momo 戰鬥陀螺X專區商品
   url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=12953255
-  max_price: 2178
+  max_price: 1980
   enabled: true
 - name: 蝦皮 Funbox 官方旗艦店熱門款
   url: https://shopee.tw/product/42721867/25578850687
-  max_price: 1815
+  max_price: 1650
   enabled: true
 - name: 酷比樂戰鬥陀螺X商品
   url: https://preorder.amuzinc.com/
-  max_price: 1452
+  max_price: 1320
   enabled: false
 - name: 誠品線上玩具專區
   url: https://www.eslite.com/
-  max_price: 1815
+  max_price: 1650
   enabled: false
 - name: 戰鬥陀螺 CX-18-1紫綠色 籤王 腕龍鞭打 Nr軸 確定版強化組 BB09617 BEYBLADE X
   url: https://24h.pchome.com.tw/prod/DEASR1-B900KCPVW
@@ -64,7 +64,7 @@ targets:
   enabled: true
 - name: 日版空運 戰鬥陀螺 BX-40 左迴旋 發射器(酒紅) BEYBLADE X
   url: https://24h.pchome.com.tw/prod/DEASR1-B900K4JVW
-  max_price: 1056
+  max_price: 960
   enabled: true
 - name: Beyblade X   隕星龍騎士 UX-17 系列 美版3-70J 附拉繩發射器
   url: https://24h.pchome.com.tw/prod/DEASSW-A900KCF5L
@@ -76,7 +76,7 @@ targets:
   enabled: true
 - name: 戰鬥陀螺 BEYBLADE BURST#44 B-44 聖光神鷹
   url: https://24h.pchome.com.tw/prod/QFAS11-A9008Z134
-  max_price: 376
+  max_price: 342
   enabled: true
 - name: 戰鬥陀螺 UX-21 惡魔幽冥改造組 BEYBLADE X 台版附QRCODE
   url: https://24h.pchome.com.tw/prod/DEASR1-B900KD01F
@@ -100,15 +100,15 @@ targets:
   enabled: true
 - name: 日本戰鬥陀螺 BX-26獨角刺心 BB91446 BEYBLADE X
   url: https://24h.pchome.com.tw/prod/DEASR1-B900H4Q1P
-  max_price: 1134
+  max_price: 1031
   enabled: true
 - name: 戰鬥陀螺 BX-51 旋風發射器 黑綠 右旋 BB08926 BEYBLADE X 麗嬰代理
   url: https://24h.pchome.com.tw/prod/DEASR1-B900K4D29
-  max_price: 982
+  max_price: 893
   enabled: true
 - name: 戰鬥陀螺 BX-00 蒼龍神劍 V2 3-60F 攻擊型 BEYBLADE X 台版附QRCODE
   url: https://24h.pchome.com.tw/prod/DEASR1-B900KD024
-  max_price: 1890
+  max_price: 1718
   enabled: true
 - name: Beyblade X 戰鬥陀螺X BX-23  鳳凰飛翼 9-60GF 含一組豪華發射器 (美版)
   url: https://24h.pchome.com.tw/prod/DEASSW-A900KA4E6
@@ -116,7 +116,7 @@ targets:
   enabled: true
 - name: 戰鬥陀螺X BX-50 天堂日輪 0-80DS 隨機強化包Vol.11 BX-50
   url: https://24h.pchome.com.tw/prod/DXAX9O-A900KDFKP
-  max_price: 1660
+  max_price: 1509
   enabled: true
 - name: TAKARA TOMY BEYBLADE X 戰鬥陀螺X BX-10 極限衝擊戰鬥盤 戰鬥陀螺配件 陀螺 四方型鬥盤
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JOU
@@ -144,7 +144,7 @@ targets:
   enabled: true
 - name: 戰鬥陀螺 BX-57 3V3 對戰收納盒 黑色版 台版
   url: https://24h.pchome.com.tw/prod/DEASR1-B900KCSX5
-  max_price: 905
+  max_price: 823
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X 世代 BX-37 雙重極限衝擊戰鬥盤 豪華組 電動盤商品 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPR
@@ -168,7 +168,7 @@ targets:
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 BX-21三陀螺套裝 地獄鏈甲組合 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JOX
-  max_price: 3010
+  max_price: 2736
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 BX-34 蒼穹龍騎士 附左迴旋發射器 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CW
@@ -176,7 +176,7 @@ targets:
   enabled: true
 - name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-40 左旋拉繩發射器 黑色 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JP3
-  max_price: 1195
+  max_price: 1086
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-11 發射器握把 不包含發射器 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPI
@@ -244,21 +244,21 @@ targets:
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-17-%E6%A5%B5%E9%99%90%E8%A1%9D%E6%93%8A%E5%B0%8D%E6%88%B0%E7%B5%84-10008186.html
-  max_price: 2420
+  max_price: 2200
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-15-%E9%9B%84%E7%8D%85%E7%8D%B5%E7%88%AA-10008185.html
-  max_price: 2420
+  max_price: 2200
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-16-%E7%8E%8B%E8%9B%87%E9%9E%AD%E5%B0%BE-%E9%9A%A8%E6%A9%9F%E5%BC%B7%E5%8C%96%E7%B5%84-10008187.html
-  max_price: 2420
+  max_price: 2200
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
-  max_price: 2420
+  max_price: 2200
   enabled: true
 - name: 玩具反斗城 戰鬥陀螺X商品
   url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
-  max_price: 2420
+  max_price: 2200
   enabled: true
