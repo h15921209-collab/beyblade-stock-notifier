@@ -80,11 +80,12 @@ if st.sidebar.button("🔒 登出後台"):
 st.title("🌀 戰鬥陀螺X 缺貨有貨監控中心")
 st.markdown("隨時隨地用手機管理監控網址、更新頻率與觸發即時雲端巡檢！")
 
-tab1, tab2, tab3, tab4 = st.tabs([
-    "📋 商品清單與維護",
-    "➕ 新增商品網址",
-    "⏱️ 巡檢頻率與設定",
-    "⚡ 雲端快捷操作"
+tab1, tab_hot, tab_search, tab3, tab4 = st.tabs([
+    "📋 監控清單",
+    "🏆 熱門神物（一鍵加入）",
+    "🔍 型號搜尋與新增",
+    "⏱️ 巡檢頻率",
+    "⚡ 雲端快捷"
 ])
 
 # ------------------------------------------------------------------------------
@@ -141,20 +142,158 @@ with tab1:
 # ------------------------------------------------------------------------------
 # Tab 2: 新增商品網址
 # ------------------------------------------------------------------------------
-with tab2:
-    st.subheader("🧠 戰鬥陀螺X 智慧新增中心")
-    st.markdown("論壇玩家神器！支援全通路智慧跨搜、社群熱門爆款一鍵導入、以及貼入網址自動防偽與防黃牛！")
+# ------------------------------------------------------------------------------
+# Tab 2 (tab_hot): 社群熱門神物情報庫（一鍵加入）
+# ------------------------------------------------------------------------------
+with tab_hot:
+    hot_categories, last_update_time = get_current_hot_picks_data()
+    all_picks = [p for items in hot_categories.values() for p in items]
 
-    sub_t1, sub_t2, sub_t3 = st.tabs([
-        "🔍 模式一：型號全通路智慧跨搜",
-        "🏆 模式二：社群熱門神物一鍵導入",
-        "🔗 模式三：貼入網址智慧解析與防偽"
+    col_head1, col_head2 = st.columns([3, 2])
+    with col_head1:
+        st.subheader("🏆 玩家社群與比賽熱門神物情報庫")
+        st.caption(f"🕒 情報庫最後更新時間：`{last_update_time}` ｜ 共收錄 {len(all_picks)} 款主流爆款")
+    with col_head2:
+        st.write("")
+        if st.button("🔄 立即連線全網更新情報庫", type="secondary", use_container_width=True):
+            with st.spinner("正在連線麗嬰國際、反斗城與社群掃描最新發售型號..."):
+                updated_data = update_hot_picks_from_sources()
+                if GITHUB_TOKEN:
+                    gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
+                    with open("data/hot_picks.json", "r", encoding="utf-8") as f:
+                        gh.update_file_content("data/hot_picks.json", f.read(), "data: update hot picks meta database")
+                st.success("🎉 熱門神物清單已成功更新至最新發售情報！")
+                st.rerun()
+
+    # 頂部醒目【一鍵全網搜尋追蹤全部熱門神物】
+    st.write("")
+    if st.button(f"⚡ 🚀 一鍵全網搜尋並追蹤「全部熱門神物」 (共 {len(all_picks)} 款)", type="primary", use_container_width=True):
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        existing_urls = {t.get("url") for t in targets}
+        total_added = 0
+
+        for i, p in enumerate(all_picks):
+            m_code = p["model"]
+            status_text.markdown(f"正在全通路檢索 **【{m_code}】{p['name']}** 官方正版賣場 ({i+1}/{len(all_picks)})...")
+            progress_bar.progress((i + 1) / len(all_picks))
+            found = smart_cross_search(m_code)
+            for s in found:
+                if s["url"] not in existing_urls:
+                    targets.insert(0, {
+                        "name": s["name"],
+                        "url": s["url"],
+                        "max_price": s["max_price"],
+                        "enabled": True
+                    })
+                    existing_urls.add(s["url"])
+                    total_added += 1
+
+        save_config(cfg, sync_github=True)
+        status_text.empty()
+        progress_bar.empty()
+        st.success(f"🎉 狂賀！已全自動跨各大官方通路檢索完畢，共為您新增 **{total_added} 間官方正版賣場** 進入監控名單！")
+        st.rerun()
+
+    st.caption("支援下方個別分類「一鍵全選加入」或自由「勾選批次加入」：")
+
+    # 預設全部展開 (expanded=True)，在手機上無需點擊即可直接看到與操作！
+    for cat_name, items in hot_categories.items():
+        with st.expander(f"{cat_name} ({len(items)} 款精選)", expanded=True):
+            # 最左側滿版醒目主按鈕
+            if st.button(f"⚡ ➕ 一鍵追蹤「{cat_name}」全部 ({len(items)} 款)", type="primary", key=f"cat_all_{cat_name}", use_container_width=True):
+                existing_urls = {t.get("url") for t in targets}
+                cat_added = 0
+                with st.spinner(f"正在為【{cat_name}】全網搜尋官方賣場..."):
+                    for p in items:
+                        found = smart_cross_search(p["model"])
+                        for s in found:
+                            if s["url"] not in existing_urls:
+                                targets.insert(0, {
+                                    "name": s["name"],
+                                    "url": s["url"],
+                                    "max_price": s["max_price"],
+                                    "enabled": True
+                                })
+                                existing_urls.add(s["url"])
+                                cat_added += 1
+                save_config(cfg, sync_github=True)
+                st.success(f"🎉 成功為【{cat_name}】新增 {cat_added} 間官方賣場！")
+                st.rerun()
+
+            st.divider()
+
+            selected_in_cat = []
+            for idx, pick in enumerate(items):
+                p_col_chk, p_col1, p_col2, p_col3 = st.columns([0.5, 3, 2, 1.8])
+                with p_col_chk:
+                    is_sel = st.checkbox("", value=True, key=f"chk_{cat_name}_{pick['model']}_{idx}")
+                    if is_sel:
+                        selected_in_cat.append(pick)
+                with p_col1:
+                    st.markdown(f"**【{pick['model']}】{pick['name']}**")
+                    st.caption(f"💡 {pick['desc']}")
+                with p_col2:
+                    _, max_lim = get_official_price_and_limit(pick['name'], fallback_price=pick['official_price'])
+                    st.markdown(f"官方原價: `NT$ {pick['official_price']}`")
+                    st.markdown(f"🔒 鎖定上限: **NT$ {max_lim}**")
+                with p_col3:
+                    if st.button(f"🔎 尋找賣場並追蹤", key=f"hot_{pick['model']}_{idx}"):
+                        with st.spinner(f"正在全通路尋找 {pick['model']} 官方賣場..."):
+                            found_stores = smart_cross_search(pick["model"])
+                            if found_stores:
+                                existing_urls = {t.get("url") for t in targets}
+                                added = 0
+                                for s in found_stores:
+                                    if s["url"] not in existing_urls:
+                                        targets.insert(0, {
+                                            "name": s["name"],
+                                            "url": s["url"],
+                                            "max_price": s["max_price"],
+                                            "enabled": True
+                                        })
+                                        existing_urls.add(s["url"])
+                                        added += 1
+                                save_config(cfg, sync_github=True)
+                                st.success(f"🎉 成功為【{pick['model']}】新增 {added} 間官方賣場！")
+                                st.rerun()
+                            else:
+                                st.warning(f"各大通路此款極度缺貨下架，暫無現存賣場。")
+
+            if selected_in_cat and len(selected_in_cat) < len(items):
+                if st.button(f"☑️ ➕ 批次加入本分類已勾選的 {len(selected_in_cat)} 款神物", type="secondary", key=f"sel_batch_{cat_name}", use_container_width=True):
+                    existing_urls = {t.get("url") for t in targets}
+                    batch_added = 0
+                    with st.spinner(f"正在搜尋勾選的 {len(selected_in_cat)} 款賣場..."):
+                        for p in selected_in_cat:
+                            found = smart_cross_search(p["model"])
+                            for s in found:
+                                if s["url"] not in existing_urls:
+                                    targets.insert(0, {
+                                        "name": s["name"],
+                                        "url": s["url"],
+                                        "max_price": s["max_price"],
+                                        "enabled": True
+                                    })
+                                    existing_urls.add(s["url"])
+                                    batch_added += 1
+                    save_config(cfg, sync_github=True)
+                    st.success(f"🎉 成功為已勾選款式新增 {batch_added} 間官方賣場！")
+                    st.rerun()
+
+# ------------------------------------------------------------------------------
+# Tab 3 (tab_search): 型號搜尋與新增網址
+# ------------------------------------------------------------------------------
+with tab_search:
+    st.subheader("🔍 型號搜尋與新增網址")
+    st.markdown("支援型號關鍵字跨通路跨搜，以及貼上任意賣場網址自動防偽與防黃牛！")
+
+    sub_s1, sub_s2 = st.tabs([
+        "🔍 型號全通路智慧跨搜",
+        "🔗 貼入網址智慧解析與防偽"
     ])
 
-    # --------------------------------------------------------------------------
-    # Sub-tab 1: 型號全通路智慧跨搜
-    # --------------------------------------------------------------------------
-    with sub_t1:
+    with sub_s1:
         st.markdown("#### 🚀 型號／關鍵字跨官方通路精準檢索")
         st.caption("自動跨麗嬰國際、反斗城、PChome 24h 官方直營比對正版賣場，杜絕假貨與個人賣家！")
 
@@ -164,7 +303,7 @@ with tab2:
         with kw_col2:
             st.write("")
             st.write("")
-            do_search = st.button("🔎 開始跨通路搜尋", type="primary")
+            do_search = st.button("🔎 開始跨通路搜尋", type="primary", use_container_width=True)
 
         if do_search or "last_search_results" in st.session_state:
             if do_search:
@@ -177,7 +316,7 @@ with tab2:
             st.markdown(f"**「{kw}」官方通路檢索結果（共找到 {len(results)} 間官方賣場）：**")
 
             if results:
-                if st.button("➕ 一鍵將以上全部官方賣場加入監控", type="secondary"):
+                if st.button("➕ 一鍵將以上全部官方賣場加入監控", type="secondary", use_container_width=True):
                     added_num = 0
                     existing_urls = {t.get("url") for t in targets}
                     for r in results:
@@ -206,7 +345,7 @@ with tab2:
                             st.markdown(f"官方原價: `NT$ {item['official_price']}`")
                             st.markdown(f"🔒 鎖定上限: **NT$ {item['max_price']}**")
                         with c_act:
-                            if st.button("➕ 加入", key=f"add_search_{idx}"):
+                            if st.button("➕ 加入", key=f"add_search_{idx}", use_container_width=True):
                                 existing_urls = {t.get("url") for t in targets}
                                 if item["url"] in existing_urls:
                                     st.warning("此賣場已在清單中！")
@@ -224,148 +363,7 @@ with tab2:
             else:
                 st.info("查無符合官方直營賣場，請嘗試更換型號（如 BX-23、UX-01）或縮短關鍵字。")
 
-    # --------------------------------------------------------------------------
-    # Sub-tab 2: 社群熱門神物一鍵導入 (支援定時與即時自動更新)
-    # --------------------------------------------------------------------------
-    with sub_t2:
-        hot_categories, last_update_time = get_current_hot_picks_data()
-        all_picks = [p for items in hot_categories.values() for p in items]
-
-        col_head1, col_head2 = st.columns([3, 2])
-        with col_head1:
-            st.markdown("#### 🏆 玩家社群與比賽熱門神物情報庫")
-            st.caption(f"🕒 情報庫最後更新時間：`{last_update_time}` ｜ 共收錄 {len(all_picks)} 款主流爆款")
-        with col_head2:
-            st.write("")
-            if st.button("🔄 立即連線全網更新情報庫", type="secondary"):
-                with st.spinner("正在連線麗嬰國際、反斗城與社群掃描最新發售型號..."):
-                    updated_data = update_hot_picks_from_sources()
-                    if GITHUB_TOKEN:
-                        gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
-                        with open("data/hot_picks.json", "r", encoding="utf-8") as f:
-                            gh.update_file_content("data/hot_picks.json", f.read(), "data: update hot picks meta database")
-                    st.success("🎉 熱門神物清單已成功更新至最新發售情報！")
-                    st.rerun()
-
-        # 頂部【一鍵全選全網搜尋追蹤全部熱門神物】
-        st.write("")
-        if st.button(f"⚡ 🚀 一鍵全網搜尋並追蹤「全部熱門神物」 (共 {len(all_picks)} 款)", type="primary"):
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-            existing_urls = {t.get("url") for t in targets}
-            total_added = 0
-
-            for i, p in enumerate(all_picks):
-                m_code = p["model"]
-                status_text.markdown(f"正在全通路檢索 **【{m_code}】{p['name']}** 官方正版賣場 ({i+1}/{len(all_picks)})...")
-                progress_bar.progress((i + 1) / len(all_picks))
-                found = smart_cross_search(m_code)
-                for s in found:
-                    if s["url"] not in existing_urls:
-                        targets.insert(0, {
-                            "name": s["name"],
-                            "url": s["url"],
-                            "max_price": s["max_price"],
-                            "enabled": True
-                        })
-                        existing_urls.add(s["url"])
-                        total_added += 1
-
-            save_config(cfg, sync_github=True)
-            status_text.empty()
-            progress_bar.empty()
-            st.success(f"🎉 狂賀！已全自動跨各大官方通路檢索完畢，共為您新增 **{total_added} 間官方正版賣場** 進入監控名單！")
-            st.rerun()
-
-        st.caption("支援下方個別分類「一鍵全選加入」或自由「勾選批次加入」：")
-
-        for cat_name, items in hot_categories.items():
-            with st.expander(f"{cat_name} ({len(items)} 款精選)", expanded=True if "社群神物" in cat_name else False):
-                # 最左側滿版醒目主按鈕
-                if st.button(f"⚡ ➕ 一鍵追蹤「{cat_name}」全部 ({len(items)} 款)", type="primary", key=f"cat_all_{cat_name}", use_container_width=True):
-                    existing_urls = {t.get("url") for t in targets}
-                    cat_added = 0
-                    with st.spinner(f"正在為【{cat_name}】全網搜尋官方賣場..."):
-                        for p in items:
-                            found = smart_cross_search(p["model"])
-                            for s in found:
-                                if s["url"] not in existing_urls:
-                                    targets.insert(0, {
-                                        "name": s["name"],
-                                        "url": s["url"],
-                                        "max_price": s["max_price"],
-                                        "enabled": True
-                                    })
-                                    existing_urls.add(s["url"])
-                                    cat_added += 1
-                    save_config(cfg, sync_github=True)
-                    st.success(f"🎉 成功為【{cat_name}】新增 {cat_added} 間官方賣場！")
-                    st.rerun()
-
-                st.divider()
-
-                selected_in_cat = []
-                for idx, pick in enumerate(items):
-                    p_col_chk, p_col1, p_col2, p_col3 = st.columns([0.5, 3, 2, 1.8])
-                    with p_col_chk:
-                        is_sel = st.checkbox("", value=True, key=f"chk_{cat_name}_{pick['model']}_{idx}")
-                        if is_sel:
-                            selected_in_cat.append(pick)
-                    with p_col1:
-                        st.markdown(f"**【{pick['model']}】{pick['name']}**")
-                        st.caption(f"💡 {pick['desc']}")
-                    with p_col2:
-                        _, max_lim = get_official_price_and_limit(pick['name'], fallback_price=pick['official_price'])
-                        st.markdown(f"官方原價: `NT$ {pick['official_price']}`")
-                        st.markdown(f"🔒 鎖定上限: **NT$ {max_lim}**")
-                    with p_col3:
-                        if st.button(f"🔎 尋找賣場並追蹤", key=f"hot_{pick['model']}_{idx}"):
-                            with st.spinner(f"正在全通路尋找 {pick['model']} 官方賣場..."):
-                                found_stores = smart_cross_search(pick["model"])
-                                if found_stores:
-                                    existing_urls = {t.get("url") for t in targets}
-                                    added = 0
-                                    for s in found_stores:
-                                        if s["url"] not in existing_urls:
-                                            targets.insert(0, {
-                                                "name": s["name"],
-                                                "url": s["url"],
-                                                "max_price": s["max_price"],
-                                                "enabled": True
-                                            })
-                                            existing_urls.add(s["url"])
-                                            added += 1
-                                    save_config(cfg, sync_github=True)
-                                    st.success(f"🎉 成功為【{pick['model']}】新增 {added} 間官方賣場！")
-                                    st.rerun()
-                                else:
-                                    st.warning(f"各大通路此款極度缺貨下架，暫無現存賣場。")
-
-                if selected_in_cat and len(selected_in_cat) < len(items):
-                    if st.button(f"☑️ ➕ 批次加入本分類已勾選的 {len(selected_in_cat)} 款神物", type="secondary", key=f"sel_batch_{cat_name}", use_container_width=True):
-                        existing_urls = {t.get("url") for t in targets}
-                        batch_added = 0
-                        with st.spinner(f"正在搜尋勾選的 {len(selected_in_cat)} 款賣場..."):
-                            for p in selected_in_cat:
-                                found = smart_cross_search(p["model"])
-                                for s in found:
-                                    if s["url"] not in existing_urls:
-                                        targets.insert(0, {
-                                            "name": s["name"],
-                                            "url": s["url"],
-                                            "max_price": s["max_price"],
-                                            "enabled": True
-                                        })
-                                        existing_urls.add(s["url"])
-                                        batch_added += 1
-                        save_config(cfg, sync_github=True)
-                        st.success(f"🎉 成功為已勾選款式新增 {batch_added} 間官方賣場！")
-                        st.rerun()
-
-    # --------------------------------------------------------------------------
-    # Sub-tab 3: 貼入網址智慧解析與防偽
-    # --------------------------------------------------------------------------
-    with sub_t3:
+    with sub_s2:
         st.markdown("#### 🔗 貼入任意賣場網址（自動淨化、驗證正版與防黃牛）")
         st.caption("自動剔除 FB/Line 垃圾追蹤碼，驗證官方授權店家，並強制鎖定原價+10%上限！")
 
@@ -382,7 +380,7 @@ with tab2:
             else:
                 st.warning(badge_text)
 
-            if st.button("🔍 智慧解析賣場即時現貨與定價", type="primary"):
+            if st.button("🔍 智慧解析賣場即時現貨與定價", type="primary", use_container_width=True):
                 dispatcher = ScraperDispatcher()
                 with st.spinner("正在連線賣場讀取即時商品資訊..."):
                     detected_info = dispatcher.check({"url": clean_url})
@@ -410,7 +408,7 @@ with tab2:
             else:
                 st.success(f"✅ 價格合規！通知上限自動設定為：**NT$ {s_max_p}** (官方原價+10%)")
 
-            if st.button("➕ 確認加入監控清單", type="primary", key="confirm_smart_add"):
+            if st.button("➕ 確認加入監控清單", type="primary", key="confirm_smart_add", use_container_width=True):
                 clean_url = sanitize_url(raw_input_url)
                 targets.insert(0, {
                     "name": s_title,
