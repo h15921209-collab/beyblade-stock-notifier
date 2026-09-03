@@ -3,7 +3,7 @@ name: Beyblade X Stock Monitor
 on:
   schedule:
     # 每 15 分鐘自動執行一次巡檢 (UTC 時間)
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: # 支援在 GitHub 網頁上手動點擊立即檢查
 
 jobs:
