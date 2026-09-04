@@ -2,7 +2,7 @@ line_notify:
   channel_access_token: lFpN63Hog/WYBq9iU9xJV036WSDtN3pdv9pTG3JoGjoD09jlWI//y01sWaZ4VS+j6IR0y7myzwssciMlM0mHWOJnNLM5f2fTAIF1ykxgtNz75Hd25tMSrh9rhIRV3/m1mnbxyjR1UYX2gv3cOmQsVgdB04t89/1O/w1cDnyilFU=
   user_id: U3fac860e1000bf3982f6c89cac18eb91
 monitor:
-  interval_seconds: 300
+  interval_seconds: 900
   jitter_min_seconds: 5
   jitter_max_seconds: 15
   request_timeout: 10
@@ -508,3 +508,4 @@ targets:
 cronjob_org:
   api_key: pc57xq9yhUqGmqLGIqC/5tQcEjm1knYVGLxCJkAvewU=
   job_id: 8385066
+admin_pin: '8888'
