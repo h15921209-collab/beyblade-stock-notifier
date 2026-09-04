@@ -10,6 +10,72 @@ monitor:
   notify_on_initial_stock: true
   heartbeat_time: 09:00
 targets:
+- name: 副廠變壓器 適用型號 UX370 UX390 UX390UA UX370UA Q325,Q325UA T303UA T305CA T302CA ADP-45GW
+    ADP-45EW A ADP-45EW B Latitude 11 5175 5179 12 7275 9250 TPN-CA01 TPN-CA02 副廠變壓器
+  url: https://24h.pchome.com.tw/prod/QAAH2V-A90099QVY
+  max_price: 605
+  enabled: true
+- name: 高品質變壓器 UX305FA UX305F UX305 S200e X102b Taichi 21 Zenbook Prime BX21A BX31A
+    BX32A UX21a Zenbook UX21A UX31A UX31LA Transformer Book Trio Tx201 Tx201la Gigabyte
+    X11
+  url: https://24h.pchome.com.tw/prod/DCABJR-A9006KAYJ
+  max_price: 605
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 UX-11 衝擊龍神 豪華組 (台版) + Amiibo 卡比&傳送之星 卡比的馭天飛行
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB3K
+  max_price: 605
+  enabled: true
+- name: 四方型 19V 3.42A 65W 變壓器  TX201 S510U S410U A553M K556UQ K556U X540M X540S X453
+    E402N UX305F UX305FA BX32A UX410UQ X542 X542U X556 X556U X556UB S410UN UX303L
+    X556變壓器  ux305f 充電器  19v 3.42a
+  url: https://24h.pchome.com.tw/prod/DCABI3-A900ACDX4
+  max_price: 605
+  enabled: true
+- name: ASUS ux305充電器 w19-045n3c X540S X540M X540SA UX31A UX32A UX305L UX305F UX21A
+    UX305F UX305C UX305LA BX32L UX305FA UX305CA X551C UX305F UX360 UX360C UX301 UX303
+    UX410UF UX410UQ 19V 2.37A 45W 變壓器 ux410u 充電器  asus充電器 19v 2.37a
+  url: https://24h.pchome.com.tw/prod/DCABI3-A900A2J4U
+  max_price: 605
+  enabled: true
+- name: '[UX20]艾瑪1.5尺手提馬鞍椅凳UX20-2501A二色可選-免運費/免組裝/椅凳'
+  url: https://24h.pchome.com.tw/prod/DEDDA4-A900C16D3
+  max_price: 605
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 UX-20 榮耀武神LF (台版) + NS 巴蘭的異想奇境 中文版 (國際版)
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KC64Y
+  max_price: 605
+  enabled: true
+- name: BEYBLADE X 戰鬥陀螺 UX-20 榮耀武神LF(台版) + 泡泡瑪特 THE MONSTERS 春天野在家系列
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB42
+  max_price: 605
+  enabled: true
+- name: UX-20 榮耀女武神
+  url: https://24h.pchome.com.tw/prod/DEASSW-A900KBFXP
+  max_price: 605
+  enabled: true
+- name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 UX-20 榮耀女武神 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K7SN6
+  max_price: 605
+  enabled: true
+- name: 充電器 電源線 GF75 Thin MS-17F5 ASUS 華碩 F571 F571GD K571 K571GT X571 X571G G501
+    G501J N501 N501JW UX501 UX501JW UX550 UX550GE UX580 UX580GD UX580GE UX561U UP6502
+  url: https://24h.pchome.com.tw/prod/DCABI1-A900FKAN0
+  max_price: 605
+  enabled: true
+- name: 150W 充電器(保固更久) 適用  20V,7.5A (相容19.5V,7.7A) UX580,UX550,UX561,UX580G,UX561U,UX550GE,UX550VD,UX550VE,UX580GE,ADP-150CH
+    B,A17-150P1A,X571G,X571GT,NX550JK,FX570,FX570UD
+  url: https://24h.pchome.com.tw/prod/QAAH36-A900ADTSA
+  max_price: 605
+  enabled: true
+- name: 20V, 7.5A,150W 充電器(保固更久) 適用  19.5V,7.7A,150W,UX580G,UX561U,UX550GE,UX550VD,UX550VE,UX580GE,UX561U,UX561UD,UX561UN,FX570,FX570UD,FX86F,Q535,Q535U,Q535UD,X571,X571G,X571GT,NX550JK,ADP-150CH
+    B,A17-150P1A,
+  url: https://24h.pchome.com.tw/prod/DCABIC-A900ADH9V
+  max_price: 605
+  enabled: true
+- name: UX-17 隕星龍騎士
+  url: https://24h.pchome.com.tw/prod/DEASSW-A900KBFYF
+  max_price: 605
+  enabled: true
 - name: BEYBLADE X 戰鬥陀螺 BX-35 隨機強化組Vol.04 (台版) + PS5 改裝機甲大戰 中文版
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KCFGH
   max_price: 439
