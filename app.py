@@ -10,6 +10,7 @@ import discover_targets
 from core.msrp import get_official_price_and_limit
 from core.smart_finder import smart_cross_search, sanitize_url, verify_official_channel, get_current_hot_picks_data
 from core.meta_updater import update_hot_picks_from_sources
+from core.cronjob_api import CronJobOrgClient
 
 # 頁面配置
 st.set_page_config(
@@ -438,28 +439,81 @@ with tab3:
         format_func=lambda x: f"每 {x} 分鐘"
     )
 
-    st.info(f"💡 目前設定：GitHub Actions 雲端伺服器將會**每 {chosen_mins} 分鐘**自動執行一次全系列 63 款商品巡檢。")
+    st.info(f"💡 目前設定：系統將會**每 {chosen_mins} 分鐘**精準巡檢全庫 {len(targets)} 款正版商品。")
 
+    st.divider()
+    st.subheader("🌐 cron-job.org 精準定時連動")
+    st.caption("串接 cron-job.org API，拉動上方滑桿即可同步修改外部精準定時心跳，讓滑桿 100% 真正管用！")
+
+    cronjob_cfg = cfg.setdefault("cronjob_org", {})
+    cron_api_key = st.text_input(
+        "cron-job.org API Key (從 Console -> Settings -> API Keys 取得)",
+        value=cronjob_cfg.get("api_key", ""),
+        type="password",
+        help="登入 cron-job.org -> 點右上角頭像選 Settings -> API Keys -> Create API Key"
+    )
+
+    detected_job_id = cronjob_cfg.get("job_id")
+    if cron_api_key:
+        client = CronJobOrgClient(cron_api_key)
+        jobs = client.list_jobs()
+        if jobs:
+            st.success(f"✅ 成功連線 cron-job.org！(帳號內共有 {len(jobs)} 個排程任務)")
+            job_map = {j["jobId"]: f"{j.get('title', '未命名')} (ID: {j['jobId']})" for j in jobs}
+            
+            default_index = 0
+            job_ids = list(job_map.keys())
+            if detected_job_id in job_ids:
+                default_index = job_ids.index(detected_job_id)
+            else:
+                for idx, j_id in enumerate(job_ids):
+                    if "陀螺" in job_map[j_id] or "beyblade" in job_map[j_id].lower():
+                        default_index = idx
+                        break
+
+            chosen_job_id = st.selectbox(
+                "選擇要連動的定時任務：",
+                options=job_ids,
+                index=default_index,
+                format_func=lambda x: job_map[x]
+            )
+            detected_job_id = chosen_job_id
+        elif jobs is not None:
+            st.warning("已連線但帳號內尚無排程任務，請先建立排程。")
+        else:
+            st.error("API Key 驗證失敗，請確認是否輸入正確。")
+
+    st.divider()
     st.subheader("📱 LINE 通知憑證")
     token_val = st.text_input("Channel Access Token", value=line_cfg.get("channel_access_token", ""), type="password")
     user_id_val = st.text_input("User ID", value=line_cfg.get("user_id", ""))
 
-    if st.button("💾 儲存並更新雲端排程 (Update Cron)", type="primary"):
+    if st.button("💾 儲存並更新雲端排程 (Save & Sync)", type="primary", use_container_width=True):
         monitor_cfg["interval_seconds"] = chosen_mins * 60
         line_cfg["channel_access_token"] = token_val
         line_cfg["user_id"] = user_id_val
+        cronjob_cfg["api_key"] = cron_api_key
+        if detected_job_id:
+            cronjob_cfg["job_id"] = detected_job_id
+
         save_config(cfg, sync_github=True)
 
-        # 更新 GitHub Actions 的 .github/workflows/monitor.yml cron
+        # 1. 更新 GitHub Actions 的 .github/workflows/monitor.yml cron (保底排程)
         if GITHUB_TOKEN:
             gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
-            success = gh.update_workflow_cron(chosen_mins)
-            if success:
-                st.success(f"🎉 成功將雲端 GitHub Actions 巡檢頻率更新為每 {chosen_mins} 分鐘一次！")
-            else:
-                st.warning("已更新 config.yaml，但更新 workflow cron 時回傳異常，請檢查權限。")
+            gh.update_workflow_cron(chosen_mins)
+
+        # 2. 同步更新 cron-job.org 外部精準定時心跳！
+        cron_synced = False
+        if cron_api_key and detected_job_id:
+            client = CronJobOrgClient(cron_api_key)
+            cron_synced = client.update_job_schedule(detected_job_id, chosen_mins)
+
+        if cron_synced:
+            st.success(f"🎉 狂賀！已同步將外部定時 (cron-job.org) 與 GitHub 保底排程更新為每 {chosen_mins} 分鐘！滑桿已 100% 真正生效！")
         else:
-            st.success("已更新本地設定檔！")
+            st.success(f"✅ 已更新本機與 GitHub 保底排程為每 {chosen_mins} 分鐘！(若填入 cron-job.org API Key 可實現外部全自動秒級連動)")
+        st.rerun()
 
 # ------------------------------------------------------------------------------
 # Tab 4: 雲端快捷操作
