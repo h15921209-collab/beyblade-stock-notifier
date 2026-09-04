@@ -43,17 +43,18 @@ def save_config(cfg: dict, sync_github: bool = True):
         gh.update_file_content("config.yaml", yaml_content, "ui: update targets and config via web manager")
 
 # 登入與 PIN 碼驗證
-ADMIN_PIN = os.environ.get("ADMIN_PIN", "8888")
+cfg = load_config()
+ADMIN_PIN = str(os.environ.get("ADMIN_PIN") or cfg.get("admin_pin", "8888")).strip()
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
     st.title("🌀 戰鬥陀螺X 監控管理後台")
-    st.markdown("請輸入管理員 PIN 碼解鎖系統（預設 PIN: `8888`）：")
-    pin_input = st.text_input("管理 PIN 碼", type="password")
-    if st.button("🔓 登入後台", type="primary"):
-        if pin_input == ADMIN_PIN:
+    st.markdown("請輸入管理員 PIN 碼驗證身分解鎖系統：")
+    pin_input = st.text_input("管理 PIN 碼", type="password", placeholder="請輸入 PIN 碼")
+    if st.button("🔓 登入後台", type="primary", use_container_width=True):
+        if pin_input and pin_input == ADMIN_PIN:
             st.session_state.authenticated = True
             st.rerun()
         else:
@@ -61,7 +62,6 @@ if not st.session_state.authenticated:
     st.stop()
 
 # 進入主頁面
-cfg = load_config()
 targets = cfg.get("targets", [])
 monitor_cfg = cfg.get("monitor", {})
 line_cfg = cfg.get("line_notify", {})
@@ -484,6 +484,10 @@ with tab3:
             st.error("API Key 驗證失敗，請確認是否輸入正確。")
 
     st.divider()
+    st.subheader("🔑 管理員安全 PIN 碼")
+    new_pin_val = st.text_input("自訂後台登入 PIN 碼 (登入介面不再提供任何提示)", value=ADMIN_PIN, type="password", placeholder="例如: 9527 或 私人密碼")
+
+    st.divider()
     st.subheader("📱 LINE 通知憑證")
     token_val = st.text_input("Channel Access Token", value=line_cfg.get("channel_access_token", ""), type="password")
     user_id_val = st.text_input("User ID", value=line_cfg.get("user_id", ""))
@@ -492,6 +496,7 @@ with tab3:
         monitor_cfg["interval_seconds"] = chosen_mins * 60
         line_cfg["channel_access_token"] = token_val
         line_cfg["user_id"] = user_id_val
+        cfg["admin_pin"] = new_pin_val.strip() if new_pin_val else "8888"
         cronjob_cfg["api_key"] = cron_api_key
         if detected_job_id:
             cronjob_cfg["job_id"] = detected_job_id

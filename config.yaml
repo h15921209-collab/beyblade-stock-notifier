@@ -18,29 +18,9 @@ targets:
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9OX4
   max_price: 825
   enabled: true
-- name: 時尚雙層收納鏡面首飾盒(TO-BX07)
-  url: https://24h.pchome.com.tw/prod/QFAD04-A9009Q1IF
-  max_price: 825
-  enabled: true
-- name: 時尚雙層收納鏡面首飾盒(TO-BX07)
-  url: https://24h.pchome.com.tw/prod/QDAT01-A9009Q1HI
-  max_price: 825
-  enabled: true
-- name: 時尚雙層收納鏡面首飾盒(TO-BX07)
-  url: https://24h.pchome.com.tw/prod/QDAB7E-A900ALE1Y
-  max_price: 825
-  enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X BX-07 極限激戰初始組 戰鬥盤 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPD
   max_price: 825
-  enabled: true
-- name: 女鞋 Classic Platform Clog W Hdn 洞洞鞋 涼拖鞋 休閒鞋 206750-5BX
-  url: https://24h.pchome.com.tw/prod/DXBW23-A900K4Y76
-  max_price: 439
-  enabled: true
-- name: 【PUMA官方旗艦】 Sandy Flip BX 拖鞋 女性 39946411
-  url: https://24h.pchome.com.tw/prod/DXCB07-A900IHCD0
-  max_price: 439
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 BXG-42 夜藍騎士圓甲 限定版 藍色小籠包 UX-00
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KAH2G
@@ -216,10 +196,6 @@ targets:
 - name: BEYBLADE X 戰鬥陀螺 UX-04 極限衝擊對戰組U (台版) + 一番賞小賞 X10 (隨機)
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB3M
   max_price: 605
-  enabled: true
-- name: 【PUMA官方旗艦】 Sandy Flip BX 拖鞋 女性 39946412
-  url: https://24h.pchome.com.tw/prod/DXCB07-A900IHCC8
-  max_price: 439
   enabled: true
 - name: C23-UX32 電池適用  UX32,UX32V,UX32VD,UX32A,BX32A,U38,U38N,U38K,U38DT,U38N-C4004,BX32VD,(內接式)
   url: https://24h.pchome.com.tw/prod/QAAH2V-A900A8R96
@@ -472,62 +448,6 @@ targets:
 - name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 UX-19 子彈獅鷲 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMY
   max_price: 605
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X UX-17 隕星龍騎士 附左迴旋發射器 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMV
-  max_price: 605
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X UX-09 武士星劍豪華組 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMS
-  max_price: 605
-  enabled: true
-- name: Takara Tomy Beyblade X 戰鬥陀螺 UX-01 蒼龍爆刃 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SM3
-  max_price: 605
-  enabled: true
-- name: BEYBLADE X 戰鬥陀螺 UX-11 衝擊龍神 豪華組 (台版) + Amiibo 頭巾瓦豆魯迪&羽翼之星
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB32
-  max_price: 605
-  enabled: true
-- name: BEYBLADE X 戰鬥陀螺 UX-19 子彈獅鷲H (台版) + Q版 魔法世界 玻璃獸 娃娃(隨機款)X1
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900KBB35
-  max_price: 605
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X 世代 UX-11 衝擊龍神豪華組 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SM8
-  max_price: 605
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 UX-07 鳳凰尾翼改造組 (韓版) 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMR
-  max_price: 605
-  enabled: true
-- name: 玩具反斗城 戰鬥陀螺X商品
-  url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-17-%E6%A5%B5%E9%99%90%E8%A1%9D%E6%93%8A%E5%B0%8D%E6%88%B0%E7%B5%84-10008186.html
-  max_price: 439
-  enabled: true
-- name: 玩具反斗城 戰鬥陀螺X商品
-  url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-15-%E9%9B%84%E7%8D%85%E7%8D%B5%E7%88%AA-10008185.html
-  max_price: 439
-  enabled: true
-- name: 玩具反斗城 戰鬥陀螺X商品
-  url: https://www.toysrus.com.tw/zh-tw/beyblade%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-bx-16-%E7%8E%8B%E8%9B%87%E9%9E%AD%E5%B0%BE-%E9%9A%A8%E6%A9%9F%E5%BC%B7%E5%8C%96%E7%B5%84-10008187.html
-  max_price: 439
-  enabled: true
-- name: 玩具反斗城 戰鬥陀螺X商品
-  url: https://www.toysrus.com.tw/zh-tw/beyblade-b-203-sp-starter-set-1175417.html
-  max_price: 439
-  enabled: true
-- name: 玩具反斗城 戰鬥陀螺X商品
-  url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-07-1202166.html
-  max_price: 439
-  enabled: true
-- name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-18 X旋風發射器 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K6GNN
-  max_price: 275
-  enabled: true
-- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-28 旋風發射器 右迴旋(白色) 陀螺
-  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CZ
-  max_price: 275
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺X UX-17 隕星龍騎士 附左迴旋發射器 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMV
