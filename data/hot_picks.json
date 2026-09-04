@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-03 17:35",
+  "last_updated": "2026-09-04 16:48",
   "categories": {
     "🏆 論壇社群神物款": [
       {
@@ -30,7 +30,7 @@
         "model": "UX-21",
         "name": "三陀螺對戰組 (巨神/狂暴組合)",
         "desc": "社群必買進階實戰套組，配件極度實用",
-        "official_price": 550
+        "official_price": 1399
       },
       {
         "model": "UX-15",
@@ -64,8 +64,8 @@
       {
         "model": "UX-11",
         "name": "UX-11 衝擊龍神 豪華組 (台版) + Amiibo 卡比&傳送之星 卡比的馭天飛行",
-        "desc": "官方最新上市款式 (原廠定價 NT$ 1498)",
-        "official_price": 1498,
+        "desc": "官方最新上市款式 (原廠定價 NT$ 550)",
+        "official_price": 550,
         "tier": "NEW"
       }
     ],
@@ -82,15 +82,15 @@
       {
         "model": "BX-00",
         "name": "BX-00 蒼龍神劍 V2 3-60F 攻擊型  台版附QRCODE",
-        "desc": "官方最新上市款式 (原廠定價 NT$ 1250)",
-        "official_price": 1250,
+        "desc": "官方最新上市款式 (原廠定價 NT$ 399)",
+        "official_price": 399,
         "tier": "NEW"
       },
       {
         "model": "CX-00",
         "name": "TAKARATOMY   X世代 CX-00 雄鹿鹿角 B2-60D 限定版 陀螺",
-        "desc": "官方最新上市款式 (原廠定價 NT$ 2980)",
-        "official_price": 2980,
+        "desc": "官方最新上市款式 (原廠定價 NT$ 399)",
+        "official_price": 399,
         "tier": "NEW"
       },
       {
