@@ -4,7 +4,12 @@ on:
   schedule:
     # 每 15 分鐘自動執行一次巡檢 (UTC 時間)
     - cron: '*/5 * * * *'
-  workflow_dispatch: # 支援在 GitHub 網頁上手動點擊立即檢查
+  workflow_dispatch: # 支援在 GitHub 網頁或 API 手動觸發
+    inputs:
+      trigger_source:
+        description: '觸發來源 (manual: 手動點擊需回報, cron: 定時靜音巡檢)'
+        required: false
+        default: 'cron'
 
 jobs:
   check-stock:
@@ -25,18 +30,18 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: 快取 state.json 記憶上次狀態
+      - name: 恢復 state.json 快取狀態
         uses: actions/cache@v4
         with:
           path: state.json
-          key: beyblade-stock-state-${{ github.run_id }}
+          key: stock-state-${{ github.run_id }}
           restore-keys: |
-            beyblade-stock-state-
+            stock-state-
 
       - name: 執行商品庫存巡檢
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
-          IS_MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' }}
+          IS_MANUAL_RUN: ${{ github.event.inputs.trigger_source == 'manual' }}
         run: |
           python main.py --check-once

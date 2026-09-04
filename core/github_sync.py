@@ -70,11 +70,17 @@ class GitHubSync:
         updated_content = re.sub(r"- cron: ['\"][^'\"]+['\"]", new_cron, content)
         return self.update_file_content(file_path, updated_content, f"ci: update monitor frequency to {interval_minutes} minutes")
 
-    def trigger_monitor_now(self) -> bool:
+    def trigger_monitor_now(self, trigger_source: str = "manual") -> bool:
         """一鍵觸發 GitHub Actions 立即巡檢"""
         url = f"{self.base_url}/actions/workflows/monitor.yml/dispatches"
         try:
-            r = requests.post(url, headers=self._get_headers(), json={"ref": "main"}, timeout=10)
+            payload = {
+                "ref": "main",
+                "inputs": {
+                    "trigger_source": trigger_source
+                }
+            }
+            r = requests.post(url, headers=self._get_headers(), json=payload, timeout=10)
             return r.status_code == 204
         except Exception as e:
             logger.error(f"觸發 Actions 失敗: {e}")

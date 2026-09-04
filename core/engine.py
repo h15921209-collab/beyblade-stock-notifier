@@ -91,8 +91,7 @@ class MonitorEngine:
         # 判斷是否為手動巡檢
         if is_manual is None:
             is_manual = (
-                os.environ.get("IS_MANUAL_RUN", "").lower() in ("true", "1") or
-                os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
+                os.environ.get("IS_MANUAL_RUN", "").lower() in ("true", "1")
             )
 
         # 1. 若手動觸發且本輪無任何原價現貨 ➔ 發送手動巡檢完成回報！
