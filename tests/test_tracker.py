@@ -60,5 +60,23 @@ class TestTracker(unittest.TestCase):
         )
         self.assertFalse(self.tracker.should_notify(target, info_expensive))
 
+    def test_bx28_scalper_block(self):
+        """測試 BX-28 旋風發射器賣 1280 時絕對會被防黃牛機制封殺"""
+        from core.msrp import get_official_price_and_limit
+        off_p, max_p = get_official_price_and_limit("TAKARATOMY BEYBLADE X 戰鬥陀螺X BX-28 旋風發射器 右迴旋(白色) 陀螺")
+        self.assertEqual(off_p, 250)
+        self.assertEqual(max_p, 275)
+
+        target = {"name": "BX-28 旋風發射器", "url": "https://example.com/bx28", "max_price": max_p}
+        info_scalper = ProductInfo(
+            url="https://example.com/bx28",
+            platform_name="PChome",
+            title="BX-28 旋風發射器",
+            price=1280.0,
+            status=StockStatus.IN_STOCK
+        )
+        # 1280 遠高於 275，絕不推播！
+        self.assertFalse(self.tracker.should_notify(target, info_scalper))
+
 if __name__ == "__main__":
     unittest.main()
