@@ -7,6 +7,7 @@ import yaml
 from bs4 import BeautifulSoup
 from scrapers import PChomeScraper, ToysrusScraper, FunboxScraper
 from core.msrp import get_official_price_and_limit
+from core.smart_finder import is_authentic_beyblade_product
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("AutoDiscover")
@@ -34,10 +35,9 @@ def search_pchome_beyblade() -> list:
                     name = p.get("name", "")
                     price = p.get("price", 0)
                     
-                    # 篩選戰鬥陀螺相關商品 (BX, UX, CX, 陀螺)
+                    # 篩選戰鬥陀螺相關商品（三重鋼鐵過濾機制）
                     if pid and pid not in seen_ids:
-                        name_upper = name.upper()
-                        if any(k in name_upper for k in ["BEYBLADE", "陀螺", "BX-", "UX-", "CX-", "發射器", "戰鬥盤"]):
+                        if is_authentic_beyblade_product(name):
                             seen_ids.add(pid)
                             prod_url = f"https://24h.pchome.com.tw/prod/{pid}"
                             _, max_p = get_official_price_and_limit(name, fallback_price=price)
@@ -67,9 +67,9 @@ def search_toysrus_beyblade() -> list:
                 href = a["href"]
                 if ".html" in href and any(k in href.lower() for k in ["beyblade", "bx-", "ux-"]):
                     full_url = href if href.startswith("http") else f"https://www.toysrus.com.tw{href}"
-                    if full_url not in seen_urls:
+                    title = a.text.strip() or "玩具反斗城 戰鬥陀螺X商品"
+                    if full_url not in seen_urls and is_authentic_beyblade_product(title):
                         seen_urls.add(full_url)
-                        title = a.text.strip() or "玩具反斗城 戰鬥陀螺X商品"
                         _, max_p = get_official_price_and_limit(title, fallback_price=1500)
                         found.append({
                             "name": title,
@@ -98,9 +98,9 @@ def search_funbox_beyblade() -> list:
                 if "/products/" in href and not href.endswith("/products"):
                     clean_path = href.split("?")[0]
                     full_url = f"https://shop.funbox.com.tw{clean_path}" if clean_path.startswith("/") else clean_path
-                    if full_url not in seen_urls:
+                    title = a.text.strip() or "麗嬰國際 戰鬥陀螺X"
+                    if full_url not in seen_urls and is_authentic_beyblade_product(title):
                         seen_urls.add(full_url)
-                        title = a.text.strip() or "麗嬰國際 戰鬥陀螺X"
                         _, max_p = get_official_price_and_limit(title, fallback_price=1500)
                         found.append({
                             "name": title,

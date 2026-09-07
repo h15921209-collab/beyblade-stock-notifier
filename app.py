@@ -8,7 +8,7 @@ from core.github_sync import GitHubSync
 import discover_targets
 
 from core.msrp import get_official_price_and_limit
-from core.smart_finder import smart_cross_search, sanitize_url, verify_official_channel, get_current_hot_picks_data
+from core.smart_finder import smart_cross_search, sanitize_url, verify_official_channel, get_current_hot_picks_data, is_authentic_beyblade_product
 from core.meta_updater import update_hot_picks_from_sources
 from core.cronjob_api import CronJobOrgClient
 
@@ -409,18 +409,23 @@ with tab_search:
             else:
                 st.success(f"✅ 價格合規！通知上限自動設定為：**NT$ {s_max_p}** (官方原價+10%)")
 
-            if st.button("➕ 確認加入監控清單", type="primary", key="confirm_smart_add", use_container_width=True):
-                clean_url = sanitize_url(raw_input_url)
-                targets.insert(0, {
-                    "name": s_title,
-                    "url": clean_url,
-                    "max_price": s_max_p,
-                    "enabled": True
-                })
-                save_config(cfg, sync_github=True)
-                st.success(f"🎉 成功新增：{s_title}，已同步推送到 GitHub 雲端！")
-                st.session_state.pop("smart_title", None)
-                st.rerun()
+            # 三重鋼鐵過濾機制檢驗
+            is_valid_beyblade = is_authentic_beyblade_product(s_title)
+            if not is_valid_beyblade:
+                st.error("🛑 **非戰鬥陀螺商品警示**：此商品經三重鋼鐵過濾檢驗判定為非戰鬥陀螺正版品項（可能為鞋類、飾品、3C零件或非陀螺雜物）。為保持監控庫存純淨度，系統已拒絕收錄！")
+            else:
+                if st.button("➕ 確認加入監控清單", type="primary", key="confirm_smart_add", use_container_width=True):
+                    clean_url = sanitize_url(raw_input_url)
+                    targets.insert(0, {
+                        "name": s_title,
+                        "url": clean_url,
+                        "max_price": s_max_p,
+                        "enabled": True
+                    })
+                    save_config(cfg, sync_github=True)
+                    st.success(f"🎉 成功新增：{s_title}，已同步推送到 GitHub 雲端！")
+                    st.session_state.pop("smart_title", None)
+                    st.rerun()
 
 # ------------------------------------------------------------------------------
 # Tab 3: 巡檢頻率與設定
