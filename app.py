@@ -11,6 +11,7 @@ from core.msrp import get_official_price_and_limit
 from core.smart_finder import smart_cross_search, sanitize_url, verify_official_channel, get_current_hot_picks_data, is_authentic_beyblade_product
 from core.meta_updater import update_hot_picks_from_sources
 from core.cronjob_api import CronJobOrgClient
+from core.stores_data import get_all_stores, get_cities, get_stores_by_city, search_stores, get_google_maps_url
 
 # 頁面配置
 st.set_page_config(
@@ -81,10 +82,11 @@ if st.sidebar.button("🔒 登出後台"):
 st.title("🌀 戰鬥陀螺X 缺貨有貨監控中心")
 st.markdown("隨時隨地用手機管理監控網址、更新頻率與觸發即時雲端巡檢！")
 
-tab1, tab_hot, tab_search, tab3, tab4 = st.tabs([
+tab1, tab_hot, tab_search, tab_stores, tab3, tab4 = st.tabs([
     "📋 監控清單",
     "🏆 熱門神物（一鍵加入）",
     "🔍 型號搜尋與新增",
+    "🏬 實體門市與開賣",
     "⏱️ 巡檢頻率",
     "⚡ 雲端快捷"
 ])
@@ -426,6 +428,71 @@ with tab_search:
                     st.success(f"🎉 成功新增：{s_title}，已同步推送到 GitHub 雲端！")
                     st.session_state.pop("smart_title", None)
                     st.rerun()
+
+# ------------------------------------------------------------------------------
+# Tab: 實體專櫃與開賣快報 (tab_stores)
+# ------------------------------------------------------------------------------
+with tab_stores:
+    st.subheader("🏬 全台實體百貨專櫃速查 ＆ ⏰ 開賣快報")
+    st.markdown("當線上電商極度缺貨或遭秒殺時，全台 76+ 家正版實體專櫃常有門市現場配額！")
+
+    sub_tab_stores, sub_tab_restocks = st.tabs([
+        "🗺️ 全台實體門市速查 (76+ 家)",
+        "⏰ 開賣快報與搶購守則"
+    ])
+
+    with sub_tab_stores:
+        st.markdown("#### 🏢 實體專櫃依縣市即時篩選")
+        st.caption("收錄麗嬰國際 Funbox Toys、玩具反斗城、鼎美玩具、Toy World 等官方直營正版專櫃與旗艦店。")
+
+        col_search, col_city = st.columns([2, 1.5])
+        with col_search:
+            store_kw = st.text_input("🔍 搜尋門市名稱或百貨商場（如：A8、南港、大遠百、三越）：", "", key="store_search_kw")
+        with col_city:
+            cities = get_cities()
+            selected_city = st.selectbox("📍 選擇縣市篩選：", cities, index=0, key="store_city_sel")
+
+        if store_kw:
+            display_stores = search_stores(store_kw)
+            if selected_city != "全部":
+                display_stores = [s for s in display_stores if s["city"] == selected_city]
+            st.info(f"搜尋「{store_kw}」在【{selected_city}】共找到 **{len(display_stores)}** 家門市：")
+        else:
+            display_stores = get_stores_by_city(selected_city)
+            st.caption(f"【{selected_city}】地區共 **{len(display_stores)}** 家正版門市：")
+
+        # 兩欄式卡片呈現
+        for i in range(0, len(display_stores), 2):
+            cols = st.columns(2)
+            for j in range(2):
+                if i + j < len(display_stores):
+                    st_item = display_stores[i + j]
+                    with cols[j]:
+                        with st.container(border=True):
+                            badge_color = "🟡" if st_item["brand"] == "Funbox" else ("🔵" if st_item["brand"] == "玩具反斗城" else "🟣")
+                            st.markdown(f"**{badge_color} {st_item['name']}**")
+                            st.caption(f"📍 {st_item['city']} {st_item['area']} ｜ 🏢 {st_item['mall']} ｜ 🏷️ {st_item['type']}")
+                            maps_url = get_google_maps_url(st_item)
+                            st.markdown(f"[🗺️ 開啟 Google Maps 導航]({maps_url})")
+
+        st.divider()
+        st.markdown("💡 想查看含 GPS 定位互動地圖？可參考社群夥伴建立之 [BeybladeHub 全台實體門市地圖](https://beybladehub.app/stores)。")
+
+    with sub_tab_restocks:
+        st.markdown("#### ⏰ 戰鬥陀螺X 開賣週期與搶購秘訣")
+        st.info("💡 **官方常態發售規律**：Takara Tomy / 麗嬰國際通常於**每個月的第三或第四個週六上午**在全台各大通路同步開賣新系列（Starter/Booster/戰鬥盤）。")
+
+        st.markdown("""
+        ##### 🎯 實體百貨專櫃現場搶購守則：
+        1. **開店發號碼牌**：熱門神物發售首日（如 UX-03 魔導神杖、BX-35 黑鳳凰、BX-23 鳳凰飛翼），大遠百或三越 Funbox 專櫃常在百貨開門前發放號碼牌（每人限購 1 顆）。
+        2. **門市配額充足**：相較於網路機器人秒殺，實體店每一間專櫃都有基本配額，提早 15~30 分鐘到門市往往能原價無痛入手。
+        3. **電話詢問現貨**：出發前可利用地圖上的專櫃電話先致電確認是否有當日現貨，省去撲空白跑。
+
+        ##### 🛒 線上官方通路原價搶購守則：
+        1. **鎖定直營原廠**：優先守候 PChome 24h、麗嬰 Funbox 官網、反斗城官網，本系統全天候 24h 監控庫存。
+        2. **嚴防黃牛溢價**：本系統已全面啟用「官方 MSRP + 10%」上限鎖定，當第三方賣家炒作翻倍（如 250 賣 1280）時，系統會自動靜默絕不誤報！
+        3. **正版防偽辨識**：認明外盒印有 **麗嬰國際代理商貼紙** 與 **Takara Tomy 雷射防偽標籤**。
+        """)
 
 # ------------------------------------------------------------------------------
 # Tab 3: 巡檢頻率與設定
