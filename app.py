@@ -21,10 +21,23 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# 機密與環境變數管理
+def get_secret(key: str, default: str = "") -> str:
+    """安全獲取機密設定 (優先從 Streamlit secrets 讀取，其次讀取環境變數，最後使用預設值)"""
+    try:
+        if key in st.secrets:
+            return str(st.secrets[key]).strip()
+    except Exception:
+        pass
+    val = os.environ.get(key)
+    if val:
+        return str(val).strip()
+    return default
+
 # 載入設定檔
 CONFIG_PATH = "config.yaml"
 GITHUB_REPO = "h15921209-collab/beyblade-stock-notifier"
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "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")
+GITHUB_TOKEN = get_secret("GITHUB_TOKEN", "")
 
 def load_config():
     if os.path.exists(CONFIG_PATH):
@@ -32,10 +45,24 @@ def load_config():
             return yaml.safe_load(f) or {}
     return {}
 
+def sanitize_config_for_export(config_data: dict) -> dict:
+    """確保導出到磁碟及同步到 GitHub 的 config.yaml 絕不包含任何私人憑證與金鑰"""
+    import copy
+    clean = copy.deepcopy(config_data)
+    if "line_notify" in clean:
+        clean["line_notify"]["channel_access_token"] = ""
+        clean["line_notify"]["user_id"] = ""
+    if "cronjob_org" in clean:
+        clean["cronjob_org"]["api_key"] = ""
+    if "admin_pin" in clean:
+        clean.pop("admin_pin", None)
+    return clean
+
 def save_config(cfg: dict, sync_github: bool = True):
-    # 儲存到本地
+    # 脫敏處理：確保寫入磁碟與推送到公開 GitHub 前去除所有敏感金鑰
+    export_cfg = sanitize_config_for_export(cfg)
     with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-        yaml.safe_dump(cfg, f, allow_unicode=True, sort_keys=False)
+        yaml.safe_dump(export_cfg, f, allow_unicode=True, sort_keys=False)
     # 同步至 GitHub
     if sync_github and GITHUB_TOKEN:
         gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
@@ -45,7 +72,7 @@ def save_config(cfg: dict, sync_github: bool = True):
 
 # 登入與 PIN 碼驗證
 cfg = load_config()
-ADMIN_PIN = str(os.environ.get("ADMIN_PIN") or cfg.get("admin_pin", "8888")).strip()
+ADMIN_PIN = get_secret("ADMIN_PIN", str(cfg.get("admin_pin", "8888"))).strip()
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -518,16 +545,18 @@ with tab3:
     st.caption("串接 cron-job.org API，拉動上方滑桿即可同步修改外部精準定時心跳，讓滑桿 100% 真正管用！")
 
     cronjob_cfg = cfg.setdefault("cronjob_org", {})
+    configured_cron_key = get_secret("CRONJOB_API_KEY", cronjob_cfg.get("api_key", ""))
     cron_api_key = st.text_input(
         "cron-job.org API Key (從 Console -> Settings -> API Keys 取得)",
-        value=cronjob_cfg.get("api_key", ""),
+        value=configured_cron_key,
         type="password",
-        help="登入 cron-job.org -> 點右上角頭像選 Settings -> API Keys -> Create API Key"
+        help="登入 cron-job.org -> 點右上角頭像選 Settings -> API Keys -> Create API Key。亦可直接配置於 Streamlit Secrets (CRONJOB_API_KEY)。"
     )
 
     detected_job_id = cronjob_cfg.get("job_id")
-    if cron_api_key:
-        client = CronJobOrgClient(cron_api_key)
+    effective_cron_key = cron_api_key or configured_cron_key
+    if effective_cron_key:
+        client = CronJobOrgClient(effective_cron_key)
         jobs = client.list_jobs()
         if jobs:
             st.success(f"✅ 成功連線 cron-job.org！(帳號內共有 {len(jobs)} 個排程任務)")
@@ -561,8 +590,11 @@ with tab3:
 
     st.divider()
     st.subheader("📱 LINE 通知憑證")
-    token_val = st.text_input("Channel Access Token", value=line_cfg.get("channel_access_token", ""), type="password")
-    user_id_val = st.text_input("User ID", value=line_cfg.get("user_id", ""))
+    st.caption("💡 提示：本倉庫為公開 (Public) 永久免費模式，LINE 金鑰與 API Key 建議配置於 Streamlit Secrets 與 GitHub Secrets，可完全杜絕外洩風險！")
+    configured_line_token = get_secret("LINE_CHANNEL_ACCESS_TOKEN", line_cfg.get("channel_access_token", ""))
+    configured_line_user = get_secret("LINE_USER_ID", line_cfg.get("user_id", ""))
+    token_val = st.text_input("Channel Access Token", value=configured_line_token, type="password")
+    user_id_val = st.text_input("User ID", value=configured_line_user)
 
     if st.button("💾 儲存並更新雲端排程 (Save & Sync)", type="primary", use_container_width=True):
         monitor_cfg["interval_seconds"] = chosen_mins * 60
@@ -582,8 +614,8 @@ with tab3:
 
         # 2. 同步更新 cron-job.org 外部精準定時心跳！
         cron_synced = False
-        if cron_api_key and detected_job_id:
-            client = CronJobOrgClient(cron_api_key)
+        if effective_cron_key and detected_job_id:
+            client = CronJobOrgClient(effective_cron_key)
             cron_synced = client.update_job_schedule(detected_job_id, chosen_mins)
 
         if cron_synced:
@@ -603,18 +635,23 @@ with tab4:
         st.markdown("#### 🚀 立即雲端巡檢")
         st.caption("不等 15 分鐘，現在就讓 GitHub Actions 在雲端虛擬機立即掃描一次！")
         if st.button("▶️ 立即觸發雲端檢查"):
-            gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
-            with st.spinner("正在向 GitHub 傳送觸發指令..."):
-                if gh.trigger_monitor_now():
-                    st.success("✅ 雲端巡檢指令已發送！請稍候 30 秒至 1 分鐘查看結果。")
-                else:
-                    st.error("❌ 觸發失敗，請確認 Token 權限。")
+            if not GITHUB_TOKEN:
+                st.warning("⚠️ 尚未配置 GITHUB_TOKEN (請在 Streamlit Secrets 設定 GITHUB_TOKEN 以啟用雲端手動觸發)。")
+            else:
+                gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
+                with st.spinner("正在向 GitHub 傳送觸發指令..."):
+                    if gh.trigger_monitor_now():
+                        st.success("✅ 雲端巡檢指令已發送！請稍候 30 秒至 1 分鐘查看結果。")
+                    else:
+                        st.error("❌ 觸發失敗，請確認 Token 權限。")
 
     with col2:
         st.markdown("#### 📲 LINE 測試卡片")
         st.caption("立即發送一則測試訊息到手機，確認 LINE Bot 是否在線。")
         if st.button("📨 發送測試通知"):
-            notifier = LineNotifier(line_cfg.get("channel_access_token", ""), line_cfg.get("user_id", ""))
+            eff_token = get_secret("LINE_CHANNEL_ACCESS_TOKEN", line_cfg.get("channel_access_token", ""))
+            eff_user = get_secret("LINE_USER_ID", line_cfg.get("user_id", ""))
+            notifier = LineNotifier(eff_token, eff_user)
             with st.spinner("發送中..."):
                 if notifier.send_test_message():
                     st.success("✅ 測試訊息已送出，請看手機 LINE！")
@@ -633,11 +670,14 @@ with tab4:
 
     st.markdown("---")
     st.subheader("📊 最近雲端巡檢紀錄 (GitHub Actions Runs)")
-    gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
-    runs = gh.get_recent_runs(limit=5)
-    if runs:
-        for r in runs:
-            status_icon = "🟢" if r.get("conclusion") == "success" else ("🟡" if r.get("status") == "in_progress" else "⚪")
-            st.markdown(f"{status_icon} **{r.get('name')}** - 狀態: `{r.get('status')}` ({r.get('conclusion') or '執行中'}) | 啟動時間: `{r.get('created_at')}` [查看雲端即時 Log]({r.get('html_url')})")
+    if GITHUB_TOKEN:
+        gh = GitHubSync(token=GITHUB_TOKEN, repo=GITHUB_REPO)
+        runs = gh.get_recent_runs(limit=5)
+        if runs:
+            for r in runs:
+                status_icon = "🟢" if r.get("conclusion") == "success" else ("🟡" if r.get("status") == "in_progress" else "⚪")
+                st.markdown(f"{status_icon} **{r.get('name')}** - 狀態: `{r.get('status')}` ({r.get('conclusion') or '執行中'}) | 啟動時間: `{r.get('created_at')}` [查看雲端即時 Log]({r.get('html_url')})")
+        else:
+            st.caption("暫無歷史紀錄")
     else:
-        st.caption("暫無歷史紀錄")
+        st.caption("💡 未配置 GITHUB_TOKEN，若需在後台查看 GitHub Actions 紀錄，可於 Streamlit Secrets 配置 GITHUB_TOKEN。")
