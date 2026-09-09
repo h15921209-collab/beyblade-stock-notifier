@@ -1,6 +1,6 @@
 line_notify:
-  channel_access_token: ""
-  user_id: ""
+  channel_access_token: ''
+  user_id: ''
 monitor:
   interval_seconds: 900
   jitter_min_seconds: 5
@@ -402,6 +402,18 @@ targets:
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K53CZ
   max_price: 275
   enabled: true
+- name: Beyblade X 綠鱷魚 鱷魚粉碎組 BX系列 美版2-60Q 附拉繩發射器 含握把
+  url: https://24h.pchome.com.tw/prod/DEASSW-A900KBKEA
+  max_price: 275
+  enabled: true
+- name: 戰鬥陀螺X BX-42 X發射器改造型握把 輔助配件 藍色透明 BX-42
+  url: https://24h.pchome.com.tw/prod/DXAX9O-A900KF4DG
+  max_price: 275
+  enabled: true
+- name: Takara Tomy Beyblade 戰鬥陀螺 X BX-12 3對3收納盒 戰鬥陀螺配件 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPK
+  max_price: 275
+  enabled: true
 cronjob_org:
-  api_key: ""
+  api_key: ''
   job_id: 8385066
