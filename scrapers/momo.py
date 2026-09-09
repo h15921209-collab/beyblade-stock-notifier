@@ -33,26 +33,39 @@ class MomoScraper(BaseScraper):
             )
 
         clean_buy_url = f"https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code={icode}"
-        mobile_url = f"https://m.momoshop.com.tw/goods.momo?i_code={icode}"
 
         try:
-            # Momo 行動版頁面結構較乾淨且輕量
+            # Momo 桌面版採用 Next.js SSR，速度快且不易觸發行動版 Akamai 挑戰驗證
             headers = self.get_headers({
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
-                "Referer": "https://m.momoshop.com.tw/",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+                "Referer": "https://www.momoshop.com.tw/",
+                "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             })
-            resp = self.session.get(mobile_url, headers=headers, timeout=self.timeout)
+            resp = self.session.get(clean_buy_url, headers=headers, timeout=self.timeout)
             
-            # 若行動版有跳轉或異常，嘗試桌面版
-            if resp.status_code != 200:
-                desktop_headers = self.get_headers({
-                    "Referer": "https://www.momoshop.com.tw/",
-                })
-                resp = self.session.get(clean_buy_url, headers=desktop_headers, timeout=self.timeout)
+            # 若 404 或下架
+            if resp.status_code == 404:
+                return ProductInfo(
+                    url=url,
+                    platform_name=self.name,
+                    title=f"Momo 商品已下架 (i_code: {icode})",
+                    status=StockStatus.OUT_OF_STOCK,
+                    direct_buy_url=clean_buy_url
+                )
 
             resp.raise_for_status()
             html = resp.text
             soup = BeautifulSoup(html, "html.parser")
+
+            # 0. 檢查下架/無展售訊息
+            if "商品目前無展售" in html or "網頁不存在" in html or "Mobile管理訊息" in html:
+                return ProductInfo(
+                    url=url,
+                    platform_name=self.name,
+                    title=f"Momo 商品無展售/已下架 (i_code: {icode})",
+                    status=StockStatus.OUT_OF_STOCK,
+                    direct_buy_url=clean_buy_url
+                )
 
             # 1. 抓取品名
             title = None
@@ -72,12 +85,12 @@ class MomoScraper(BaseScraper):
                     pass
 
             if not price:
-                price_match = re.search(r'["\']salePrice["\']\s*:\s*["\']?(\d+)["\']?', html)
+                price_match = re.search(r'["\'](?:salePrice|specialPrice|goodsPrice|price)["\']\s*:\s*["\']?(\d+)["\']?', html)
                 if price_match:
                     price = float(price_match.group(1))
 
-            # 0. 檢查是否遇到 Momo 防爬蟲驗證頁面 (Challenge Validation)
-            if "Challenge Validation" in html or "robot" in html.lower() or (title and "Challenge Validation" in title):
+            # 3. 檢查是否遇到防爬蟲驗證頁面 (Challenge Validation)
+            if "Challenge Validation" in html or (title and "Challenge Validation" in title):
                 logger.warning(f"[Momo] 遇到防爬蟲驗證頁面 ({url})")
                 return ProductInfo(
                     url=url,
@@ -88,23 +101,33 @@ class MomoScraper(BaseScraper):
                     error_msg="Momo anti-bot challenge validation triggered"
                 )
 
-            # 3. 判斷庫存
-            # Momo 頁面常見缺貨關鍵字
-            out_of_stock_keywords = [
-                "已售完", "補貨中", "完售", "售完補貨中", "暫時下架", "此商品已下架", "下架", "商品已無庫存"
-            ]
-            in_stock = True
-            
-            # 檢查按鈕或文字
-            for kw in out_of_stock_keywords:
-                if kw in html:
-                    # 進一步確認是否在核心購物按鈕區塊
-                    in_stock = False
-                    break
+            # 4. 判斷庫存 (優先從 Next.js 結構化欄位判斷)
+            in_stock = False
 
-            # 額外檢查是否有「立即購買」或「加入購物車」文字
-            if ("立即購買" in html or "直接購買" in html or "加入購物車" in html) and not any(kw in html for kw in ["已售完", "售完補貨中"]):
-                in_stock = True
+            # (A) 檢查 Next.js 串流資料內的 goodsStock
+            stock_match = re.search(r'["\']goodsStock["\']\s*:\s*["\']?(\d+)["\']?', html)
+            if stock_match:
+                goods_stock = int(stock_match.group(1))
+                in_stock = goods_stock > 0
+            else:
+                # (B) 檢查 Schema.org availability
+                schema_match = re.search(r'["\'](?:availability|content)["\']\s*:\s*["\'](?:https?://schema.org/)?(InStock|OutOfStock|in stock|out of stock)["\']', html, re.I)
+                if schema_match:
+                    in_stock = "instock" in schema_match.group(1).lower()
+                else:
+                    # (C) 檢查頁面關鍵字特徵
+                    out_of_stock_keywords = [
+                        "已售完", "補貨中", "完售", "售完補貨中", "暫時下架", "此商品已下架", "下架", "商品已無庫存"
+                    ]
+                    in_stock = True
+                    for kw in out_of_stock_keywords:
+                        if kw in html:
+                            in_stock = False
+                            break
+
+                    if not in_stock and any(btn_kw in html for btn_kw in ["直接購買", "加入購物車", "立即購買"]):
+                        if not any(sold_kw in html for sold_kw in ["已售完", "售完補貨中"]):
+                            in_stock = True
 
             image_url = None
             img_meta = soup.find("meta", property="og:image")

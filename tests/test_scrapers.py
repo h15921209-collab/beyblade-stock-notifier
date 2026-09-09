@@ -119,5 +119,39 @@ class TestScrapers(unittest.TestCase):
             self.assertEqual(info.status, StockStatus.OUT_OF_STOCK)
             self.assertEqual(info.price, 450.0)
 
+    def test_momo_in_stock_goods_stock(self):
+        """測試 Momo Next.js goodsStock 庫存判定"""
+        scraper = MomoScraper()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '''
+        <html>
+        <head>
+            <meta property="og:title" content="【TAKARA TOMY】戰鬥陀螺X UX-03 魔導神杖" />
+            <meta property="product:price:amount" content="550" />
+        </head>
+        <body>
+            <script>self.__next_f.push([1,"\\"goodsStock\\":\\"5\\",\\"goodsName\\":\\"UX-03\\",\\"salePrice\\":\\"550\\""])</script>
+        </body>
+        </html>
+        '''
+
+        with patch.object(scraper.session, "get", return_value=mock_resp):
+            info = scraper.check_stock("https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15502059")
+            self.assertEqual(info.status, StockStatus.IN_STOCK)
+            self.assertEqual(info.price, 550.0)
+            self.assertIn("UX-03", info.title)
+
+    def test_momo_discontinued_product(self):
+        """測試 Momo 商品下架/無展售判定"""
+        scraper = MomoScraper()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><head><title>momo購物網 -- Mobile管理訊息</title></head><body>商品目前無展售 網頁不存在</body></html>'
+
+        with patch.object(scraper.session, "get", return_value=mock_resp):
+            info = scraper.check_stock("https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=12953255")
+            self.assertEqual(info.status, StockStatus.OUT_OF_STOCK)
+
 if __name__ == "__main__":
     unittest.main()

@@ -406,6 +406,14 @@ targets:
   url: https://24h.pchome.com.tw/prod/DEASSW-A900KBKEA
   max_price: 275
   enabled: true
+- name: Takara Tomy Beyblade 戰鬥陀螺 X世代 CX-12 鳳凰烈焰 Z9-80WW 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SLY
+  max_price: 439
+  enabled: true
+- name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 CX-09 焰神滅世 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5SMH
+  max_price: 439
+  enabled: true
 - name: 戰鬥陀螺X BX-42 X發射器改造型握把 輔助配件 藍色透明 BX-42
   url: https://24h.pchome.com.tw/prod/DXAX9O-A900KF4DG
   max_price: 275
@@ -413,6 +421,38 @@ targets:
 - name: Takara Tomy Beyblade 戰鬥陀螺 X BX-12 3對3收納盒 戰鬥陀螺配件 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPK
   max_price: 275
+  enabled: true
+- name: TAKARATOMY BEYBLADE X 戰鬥陀螺X 世代 BX-42 X 發射器改造型握把(藍/透明) 不包含發射 陀螺
+  url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPT
+  max_price: 275
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺X  UX-03 魔導神杖 5-70DB 鳳凰飛翼BX-23 武士聖劍 BX-45 兩入/單入包裝組(美版)
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15489159
+  max_price: 605
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺X  UX-03 魔導神杖  5-70DB  鳳凰飛翼BX-23(美版)
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15489157
+  max_price: 605
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺X 鳳凰飛翼BX-23 魔導神杖 UX-03 綠鱷魚 隕星龍騎士UX-17含射器一組(美版)
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15502059
+  max_price: 605
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺 CX-13 龍王閃擊 附發射器 BB09725  BEYBLADE X 台版附QRCODE
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15641450
+  max_price: 275
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺 CX-18-2 金色 腕龍鞭打 Nr軸 確定版強化組 台灣版 附QRCODE BEYBLADE X
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15643274
+  max_price: 715
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺X 戰犀號角 BX-19 3-80S 鎌刀火焰BX-02 3-80B 騎士長槍BX-13 組裝強化包(美版)
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15489158
+  max_price: 439
+  enabled: true
+- name: 【TAKARA TOMY】戰鬥陀螺 BX-00 蒼龍神劍 V2 3-60F 攻擊型 BEYBLADE X BXG-49 台版附QRCODE
+  url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15649308
+  max_price: 825
   enabled: true
 cronjob_org:
   api_key: ''

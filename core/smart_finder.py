@@ -84,8 +84,9 @@ BLACKLIST_KEYWORDS = [
     "筆電", "筆記型電腦", "主機板", "記憶體", "散熱器", "耳機", "喇叭", "音響", "轉接器", "轉接頭", "保護貼", "手機殼", "保護套",
     "平板", "滑鼠", "鍵盤", "type-c", "usbc", "65w", "45w", "120w", "150w", "19v", "20v", "3.42a", "2.37a",
     "c31n", "c23-ux", "ux32", "ux305", "ux580", "ux390", "ux410", "ux5400", "ux3404", "rx32",
-    # 家具生活用品
-    "椅凳", "凳子", "椅子", "桌子", "保溫杯", "水壺", "水杯", "浴巾", "毛巾", "床單", "枕頭", "沙發", "窗簾"
+    # 家具生活用品與家電
+    "椅凳", "凳子", "椅子", "桌子", "保溫杯", "水壺", "水杯", "浴巾", "毛巾", "床單", "枕頭", "沙發", "窗簾",
+    "飛利浦", "philips", "氣炸鍋", "調理機", "豆漿機", "破壁機", "小廚神", "果汁機", "吸塵器", "吹風機", "抽獎", "抽ux"
 ]
 
 # 正面授權品牌關鍵字
@@ -289,6 +290,52 @@ def search_funbox_official(keyword: str) -> List[Dict[str, Any]]:
         pass
     return results
 
+def search_momo_official(keyword: str) -> List[Dict[str, Any]]:
+    """從 Momo 購物網官方正版授權通路精準搜尋型號商品"""
+    results = []
+    enriched_kw = enrich_search_query(keyword)
+    url = f"https://www.momoshop.com.tw/search/searchShop.jsp?keyword={urllib.parse.quote(enriched_kw)}"
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=6)
+        if r.status_code == 200:
+            pushes = re.findall(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', r.text, re.DOTALL)
+            joined = "".join(pushes)
+
+            pattern = re.compile(
+                r'\\"goodsCode\\":\\"(\d+)\\",\\"goodsName\\":\\"([^"\\]+)\\"',
+                re.DOTALL
+            )
+            seen = set()
+            for match in pattern.finditer(joined):
+                gcode = match.group(1)
+                raw_name = match.group(2)
+                name = raw_name.encode('utf-8').decode('unicode_escape', errors='ignore') if '\\u' in raw_name else raw_name
+
+                start = match.start()
+                snippet = joined[start:start + 400]
+                price_m = re.search(r'\\"goodsPrice\\":\\"([^\"]+)\\"', snippet)
+                raw_price = price_m.group(1) if price_m else "0"
+                price_digits = re.sub(r'[^\d]', '', raw_price)
+                price = float(price_digits) if price_digits else 0
+
+                if gcode and gcode not in seen and is_authentic_beyblade_product(name, target_keyword=keyword):
+                    seen.add(gcode)
+                    prod_url = f"https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code={gcode}"
+                    off_p, max_p = get_official_price_and_limit(name, fallback_price=price)
+                    results.append({
+                        "platform": "Momo 購物網",
+                        "badge": "Momo官方直營",
+                        "name": name,
+                        "url": prod_url,
+                        "current_price": price,
+                        "official_price": off_p,
+                        "max_price": max_p,
+                        "is_overpriced": price > max_p if price > 0 else False
+                    })
+    except Exception:
+        pass
+    return results
+
 def smart_cross_search(keyword: str) -> List[Dict[str, Any]]:
     """跨各大官方授權通路聯播搜尋"""
     keyword = keyword.strip()
@@ -298,8 +345,8 @@ def smart_cross_search(keyword: str) -> List[Dict[str, Any]]:
     combined = []
     seen_urls = set()
 
-    # 平行檢索各大官方通路
-    for func in [search_pchome_official, search_toysrus_official, search_funbox_official]:
+    # 平行檢索各大官方通路 (PChome, Momo, 反斗城, Funbox)
+    for func in [search_pchome_official, search_momo_official, search_toysrus_official, search_funbox_official]:
         for item in func(keyword):
             if item["url"] not in seen_urls:
                 seen_urls.add(item["url"])

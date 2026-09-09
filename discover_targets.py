@@ -114,6 +114,56 @@ def search_funbox_beyblade() -> list:
     logger.info(f"麗嬰國際官網共發現 {len(found)} 款商品！")
     return found
 
+def search_momo_beyblade() -> list:
+    """從 Momo 購物網官方授權/品牌專區自動搜尋戰鬥陀螺X系列商品"""
+    import urllib.parse
+    logger.info("正在掃描 Momo 購物網官方戰鬥陀螺X全系列商品...")
+    found = []
+    queries = ["TAKARA TOMY 戰鬥陀螺", "戰鬥陀螺X", "戰鬥陀螺 BX", "戰鬥陀螺 UX"]
+    seen_codes = set()
+
+    for q in queries:
+        url = f"https://www.momoshop.com.tw/search/searchShop.jsp?keyword={urllib.parse.quote(q)}"
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=8)
+            if r.status_code == 200:
+                pushes = re.findall(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', r.text, re.DOTALL)
+                joined = "".join(pushes)
+
+                pattern = re.compile(
+                    r'\\"goodsCode\\":\\"(\d+)\\",\\"goodsName\\":\\"([^"\\]+)\\"',
+                    re.DOTALL
+                )
+                for match in pattern.finditer(joined):
+                    gcode = match.group(1)
+                    raw_name = match.group(2)
+                    name = raw_name.encode('utf-8').decode('unicode_escape', errors='ignore') if '\\u' in raw_name else raw_name
+
+                    # 擷取周邊的價格欄位
+                    start = match.start()
+                    snippet = joined[start:start + 400]
+                    price_m = re.search(r'\\"goodsPrice\\":\\"([^\"]+)\\"', snippet)
+                    raw_price = price_m.group(1) if price_m else "0"
+                    price_digits = re.sub(r'[^\d]', '', raw_price)
+                    price = float(price_digits) if price_digits else 0
+
+                    if gcode and gcode not in seen_codes:
+                        if is_authentic_beyblade_product(name):
+                            seen_codes.add(gcode)
+                            prod_url = f"https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code={gcode}"
+                            _, max_p = get_official_price_and_limit(name, fallback_price=price if price > 0 else 1500)
+                            found.append({
+                                "name": name,
+                                "url": prod_url,
+                                "max_price": max_p,
+                                "enabled": True
+                            })
+        except Exception as e:
+            logger.warning(f"Momo 搜尋 {q} 異常: {e}")
+
+    logger.info(f"Momo 購物網共發現 {len(found)} 款正版戰鬥陀螺X商品！")
+    return found
+
 def update_config_with_discovered(discovered: list, config_file: str = "config.yaml"):
     """將發現的商品去重並合併寫入 config.yaml"""
     if not os.path.exists(config_file):
@@ -150,6 +200,7 @@ def run_discovery():
     all_discovered.extend(search_pchome_beyblade())
     all_discovered.extend(search_toysrus_beyblade())
     all_discovered.extend(search_funbox_beyblade())
+    all_discovered.extend(search_momo_beyblade())
     added, total = update_config_with_discovered(all_discovered)
     return added, total
 
