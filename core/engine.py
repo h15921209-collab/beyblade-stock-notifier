@@ -82,11 +82,36 @@ class MonitorEngine:
             except Exception as e:
                 logger.error(f"檢查商品發生例外: {name} - {e}")
 
-            # 目標間隨機微延遲 0.8~1.5 秒
-            if idx < len(targets):
-                time.sleep(random.uniform(0.8, 1.5))
+        logger.info(f"常駐清單巡檢完成！共檢查 {len(results)} 項商品。")
 
-        logger.info(f"本輪巡檢完成！共檢查 {len(results)} 項商品，發送 {notifications_sent} 則補貨通知。")
+        # 2. 全網動態無名單即時捕獲掃蕩 (Dynamic Zero-List Sweeper)
+        dynamic_enabled = bool(self.config.get("monitor", {}).get("enable_dynamic_scanner", True))
+        if dynamic_enabled:
+            try:
+                from .dynamic_scanner import scan_all_dynamic_channels
+                from core.msrp import get_official_price_and_limit
+
+                logger.info("🚀 啟動四大官方通路動態無名單即時捕獲掃蕩...")
+                dynamic_in_stock = scan_all_dynamic_channels(limit_per_channel=30)
+                logger.info(f"動態掃蕩共發現 {len(dynamic_in_stock)} 款正版原價現貨商品，進行狀態比對...")
+
+                for dyn_info in dynamic_in_stock:
+                    off_p, max_p = get_official_price_and_limit(dyn_info.title, fallback_price=dyn_info.price or 1500)
+                    dyn_target = {
+                        "name": dyn_info.title,
+                        "url": dyn_info.url,
+                        "max_price": max_p,
+                    }
+                    if self.tracker.should_notify(dyn_target, dyn_info):
+                        logger.info(f"  ⚡ 觸發【全網動態突發捕獲】LINE 推播通知: {dyn_info.title}")
+                        self.notifier.send_dynamic_stock_alert(dyn_info, official_price=off_p, max_price=max_p)
+                        notifications_sent += 1
+                        results.append(dyn_info)
+
+            except Exception as e:
+                logger.error(f"全網動態掃蕩流程異常: {e}")
+
+        logger.info(f"本輪巡檢完成！共檢查 {len(results)} 項商品，發送 {notifications_sent} 則補貨/捕獲通知。")
 
         # 判斷是否為手動巡檢
         if is_manual is None:

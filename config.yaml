@@ -9,6 +9,7 @@ monitor:
   state_file: state.json
   notify_on_initial_stock: true
   heartbeat_time: 09:00
+  enable_dynamic_scanner: true
 targets:
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 BXG-04 銀牙烈虎S 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9OWV

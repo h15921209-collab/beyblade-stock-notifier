@@ -181,6 +181,163 @@ class LineNotifier:
             return self.send_push([{"type": "text", "text": fallback_text}])
         return True
 
+    def send_dynamic_stock_alert(self, info: ProductInfo, official_price: Optional[float] = None, max_price: Optional[float] = None) -> bool:
+        """發送戰鬥陀螺X 全網動態突發捕獲推播（含搶購與手機後台雙按鈕）"""
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        price_text = f"NT$ {int(info.price):,}" if info.price is not None else "依賣場標示"
+        off_p_text = f"NT$ {int(official_price):,}" if official_price is not None else "正版參考價"
+        max_p_text = f"NT$ {int(max_price):,}" if max_price is not None else ""
+
+        flex_bubble = {
+            "type": "bubble",
+            "size": "mega",
+            "header": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": "#DC2626",
+                "paddingAll": "16px",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "⚡【全網動態突發捕獲】",
+                        "weight": "bold",
+                        "color": "#FFFFFF",
+                        "size": "lg"
+                    },
+                    {
+                        "type": "text",
+                        "text": "官方正版原價現貨 · 即時秒搶",
+                        "color": "#FECACA",
+                        "size": "xs",
+                        "margin": "xs"
+                    }
+                ]
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "spacing": "md",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": f"🏪 {info.platform_name}",
+                                "size": "xs",
+                                "color": "#2563EB",
+                                "weight": "bold"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "text": info.title,
+                        "weight": "bold",
+                        "size": "md",
+                        "wrap": True
+                    },
+                    {
+                        "type": "separator"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "搶購售價", "size": "sm", "color": "#555555", "flex": 2},
+                                    {"type": "text", "text": price_text, "size": "lg", "color": "#DC2626", "weight": "bold", "flex": 5}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "官方原價", "size": "xs", "color": "#64748B", "flex": 2},
+                                    {"type": "text", "text": off_p_text, "size": "xs", "color": "#475569", "flex": 5}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "狀態守門", "size": "xs", "color": "#16A34A", "flex": 2},
+                                    {"type": "text", "text": "✅ 原價守門通過 · 現貨在售", "size": "xs", "color": "#16A34A", "weight": "bold", "flex": 5}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "捕獲時間", "size": "xs", "color": "#94A3B8", "flex": 2},
+                                    {"type": "text", "text": now_str, "size": "xs", "color": "#94A3B8", "flex": 5}
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "footer": {
+                "type": "box",
+                "layout": "vertical",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "button",
+                        "style": "primary",
+                        "color": "#DC2626",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "🛒 立即前往搶購",
+                            "uri": info.direct_buy_url
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "style": "secondary",
+                        "color": "#E2E8F0",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "🌀 開啟手機管理後台",
+                            "uri": "https://beyblade-stock.streamlit.app/"
+                        }
+                    }
+                ]
+            }
+        }
+
+        fallback_text = (
+            f"⚡【全網動態突發捕獲通知！】⚡\n\n"
+            f"🏪 通路：{info.platform_name}\n"
+            f"🌀 商品：{info.title}\n"
+            f"💰 售價：{price_text} (官方原價: {off_p_text})\n"
+            f"📦 狀態：✅ 官方原價現貨在售！\n\n"
+            f"🛒 一鍵直達搶購連結：\n{info.direct_buy_url}\n\n"
+            f"🌀 開啟手機管理後台：\nhttps://beyblade-stock.streamlit.app/\n\n"
+            f"⏱️ 捕獲時間：{now_str}"
+        )
+
+        messages = [
+            {
+                "type": "flex",
+                "altText": f"⚡【全網動態突發捕獲】{info.title} - {price_text}",
+                "contents": flex_bubble
+            }
+        ]
+
+        success = self.send_push(messages)
+        if not success:
+            logger.info("Flex 推播失敗，轉為純文字發送備援...")
+            return self.send_push([{"type": "text", "text": fallback_text}])
+        return True
+
     def send_digest_report(self, total_monitored: int, is_manual: bool = False) -> bool:
         """發送未找到原價陀螺時的安心日報 / 手動巡檢完成回報"""
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M")

@@ -5,3 +5,7 @@ __pycache__/
 venv/
 state.json
 test_state.json
+cloudflared.exe
+launch_live.py
+live_url.txt
+test_momo*.py
