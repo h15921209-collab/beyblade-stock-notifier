@@ -89,6 +89,12 @@ BLACKLIST_KEYWORDS = [
     "飛利浦", "philips", "氣炸鍋", "調理機", "豆漿機", "破壁機", "小廚神", "果汁機", "吸塵器", "吹風機", "抽獎", "抽ux"
 ]
 
+# 舊世代（非 BEYBLADE X）硬剔除名單：排除 BURST 爆烈世代、鋼鐵奇兵、金屬對決等舊品
+LEGACY_GENERATION_KEYWORDS = [
+    "BURST", "爆烈", "爆裂", "超王", "超Z", "神世代", "GT世代", "DB世代", "BU世代",
+    "鋼鐵奇兵", "金屬對決"
+]
+
 # 正面授權品牌關鍵字
 POSITIVE_BRAND_KEYWORDS = [
     "BEYBLADE", "戰鬥陀螺", "爆旋陀螺", "TAKARA TOMY", "TAKARATOMY", "麗嬰", "FUNBOX"
@@ -119,10 +125,11 @@ def enrich_search_query(keyword: str) -> str:
 
 def is_authentic_beyblade_product(title: str, target_keyword: Optional[str] = None) -> bool:
     """
-    三重鋼鐵過濾機制核心檢驗：
+    三重鋼鐵過濾機制核心檢驗（嚴格只抓取 BEYBLADE X 世代）：
     1. 負面黑名單：硬剔除任何鞋類、首飾、3C零件、家具雜物。
-    2. 正面特徵檢驗：必須具備正版陀螺品牌（BEYBLADE/戰鬥陀螺/TAKARA TOMY等）或陀螺配件系列詞＋正規型號。
-    3. 目標型號比對：若有指定 target_keyword（如 BX-07），確保商品名稱中型號絕對吻合，防止張冠李戴。
+    2. 舊世代硬剔除：硬剔除 BURST、爆烈世代、鋼鐵奇兵或 B-44 等舊代碼。
+    3. X 世代正面強制檢驗：必須具備 X 世代官方型號（BX/UX/CX/BXG）或明確標示 BEYBLADE X / 戰鬥陀螺X。
+    4. 目標型號比對：若有指定 target_keyword（如 BX-07），確保商品名稱中型號絕對吻合，防止張冠李戴。
     """
     if not title or not isinstance(title, str):
         return False
@@ -136,15 +143,36 @@ def is_authentic_beyblade_product(title: str, target_keyword: Optional[str] = No
         if bad_word.lower() in title_lower:
             return False
 
-    # 第二重：正面特徵檢驗 (Positive Brand / Core Keywords)
+    # 第二重：舊世代硬剔除 (Exclude Legacy Generations: Burst, Metal Fight, etc.)
+    for legacy_word in LEGACY_GENERATION_KEYWORDS:
+        if legacy_word.lower() in title_lower:
+            return False
+
+    # 檢查是否有合法的 X 世代代碼 (BX, UX, CX, BXG, BX00 等)
+    has_x_model_code = bool(re.search(r'(?<![A-Za-z0-9])(BX|UX|CX|BXG)[-_]?([0-9]{1,3}|00)(?![A-Za-z0-9])', title_upper))
+    
+    # 檢查是否含有舊世代代碼 (如 B-44, B-100, BB-10 等)
+    has_legacy_code = bool(re.search(r'(?<![A-Za-z0-9])(B|BB|BBG|BA)[-_]?[0-9]{1,3}(?![A-Za-z0-9])', title_upper))
+    if has_legacy_code and not has_x_model_code:
+        return False
+
+    # 必須具備明確的 BEYBLADE X (X 世代) 特徵標記
+    is_explicit_x = (
+        "BEYBLADE X" in title_upper
+        or "戰鬥陀螺X" in title_clean
+        or "戰鬥陀螺 X" in title_clean
+        or "X世代" in title_clean
+        or "X 世代" in title_clean
+        or has_x_model_code
+    )
+    if not is_explicit_x:
+        return False
+
+    # 必須具備授權品牌或陀螺系列特徵
     has_brand = any(brand.upper() in title_upper for brand in POSITIVE_BRAND_KEYWORDS)
     has_series = any(series in title_clean for series in POSITIVE_SERIES_KEYWORDS)
 
-    # 檢查是否有合法的戰鬥陀螺代碼 (BX, UX, CX, BXG 等)，避免 206750-5BX 等偽代碼
-    has_model_code = bool(re.search(r'(?<![A-Za-z0-9])(BX|UX|CX|BXG)[-_]?\d{1,3}(?![A-Za-z0-9])', title_upper))
-
-    is_valid_beyblade = has_brand or (has_series and has_model_code)
-    if not is_valid_beyblade:
+    if not (has_brand or has_series):
         return False
 
     # 第三重：目標型號／關鍵字吻合度檢驗 (Target Model Matching)

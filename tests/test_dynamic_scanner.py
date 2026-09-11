@@ -195,3 +195,49 @@ targets: []
         # 第二輪巡檢：若持續有現貨，智慧雙軌記憶應阻擋重複通知
         results2 = engine.check_all_once(is_manual=False)
         assert engine.notifier.send_dynamic_stock_alert.call_count == 1  # 依然為 1，不重複發送
+
+def test_bxg_and_burst_and_scalper_exclusion():
+    """驗證舊世代 BURST、BXG 溢價 750 元與 BX-25 溢價 1199 元均被嚴格排除"""
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = {
+        "prods": [
+            {
+                "Id": "BURST_1",
+                "name": "【TAKARA TOMY】陀螺 BEYBLADE BURST#44 B-44 發射器",
+                "price": 249
+            },
+            {
+                "Id": "BXG01_OVERPRICED",
+                "name": "日本戰鬥陀螺 BXG-01 烈焰飛鳳S BEYBLADE X",
+                "price": 750  # 官方建議售價 350，上限 385，此處 750 必須被阻擋
+            },
+            {
+                "Id": "BX25_OVERPRICED",
+                "name": "戰鬥陀螺X BX-25 專業收納手提包",
+                "price": 1199  # 官方建議售價 850，上限 935，此處 1199 必須被阻擋
+            },
+            {
+                "Id": "BXG01_GENUINE_MSRP",
+                "name": "日本戰鬥陀螺 BXG-01 烈焰飛鳳S BEYBLADE X",
+                "price": 350  # 真正官方原價，應被放行
+            }
+        ]
+    }
+
+    with patch("requests.get", return_value=mock_resp), \
+         patch("core.dynamic_scanner.PChomeScraper.check_stock") as mock_check:
+        mock_check.return_value = ProductInfo(
+            url="https://24h.pchome.com.tw/prod/BXG01_GENUINE_MSRP",
+            platform_name="PChome 24h 購物",
+            title="日本戰鬥陀螺 BXG-01 烈焰飛鳳S BEYBLADE X",
+            price=350,
+            status=StockStatus.IN_STOCK
+        )
+
+        results = scan_pchome_dynamic(limit=10)
+        # 4 項商品中，只有 BXG01_GENUINE_MSRP (350) 應該被放行！
+        assert len(results) == 1
+        assert results[0].price == 350
+        assert "BXG-01" in results[0].title
+

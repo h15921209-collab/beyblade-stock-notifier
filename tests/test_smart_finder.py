@@ -30,6 +30,21 @@ class TestSmartFinder(unittest.TestCase):
                 f"應該被負面黑名單硬剔除，但誤判為陀螺: {title}"
             )
 
+    def test_legacy_generation_exclusion(self):
+        """測試舊世代戰鬥陀螺（BURST 爆烈世代、舊版 B-44 等）嚴格硬剔除"""
+        legacy_titles = [
+            "【TAKARA TOMY】陀螺 BEYBLADE BURST#44 B-44 發射器",
+            "TAKARA TOMY 戰鬥陀螺 爆烈世代 BURST B-180 滅世魔王",
+            "戰鬥陀螺 超王系列 B-173 無限勇士",
+            "TAKARA TOMY 戰鬥陀螺 鋼鐵奇兵 BB-10 旋風戰鬥盤",
+            "TAKARA TOMY 戰鬥陀螺 BURST GT世代 B-145",
+        ]
+        for title in legacy_titles:
+            self.assertFalse(
+                is_authentic_beyblade_product(title),
+                f"舊世代陀螺應嚴格排除，但誤判為 X 世代: {title}"
+            )
+
     def test_authentic_beyblade_products(self):
         """測試正面正版戰鬥陀螺商品驗證"""
         valid_titles = [
