@@ -23,8 +23,8 @@ OFFICIAL_MSRP_TABLE = {
     "UX-17": 550, "UX-18": 550, "UX-19": 550, "UX-20": 550,
     "UX-21": 1399, # 三陀螺進階對戰組
 
-    # --- 復刻紀念款 / 限定版 (BXG, BX00，官方定價 NT$ 750 ~ 999) ---
-    "BXG-01": 750, "BXG-02": 750, "BXG-03": 750, "BXG-04": 750,
+    # --- 復刻紀念款 / 限定版 (BXG 系列單陀螺，官方定價 NT$ 350) ---
+    "BXG-01": 350, "BXG-02": 350, "BXG-03": 350, "BXG-04": 350,
     "BXG-47": 999, "BX00": 999,
     
     # --- 客製系列 (CX) ---
@@ -42,12 +42,12 @@ OFFICIAL_MSRP_TABLE = {
     "BX-40": 250,  # 發射器
     "BX-51": 250,  # 旋風發射器
 
-    # --- 收納箱與配件 (官方定價 NT$ 1199) ---
-    "BX-25": 1199, # 戰鬥陀螺X專業收納手提包
+    # --- 收納箱與配件 (官方定價 NT$ 850，上限 NT$ 935) ---
+    "BX-25": 850, # 戰鬥陀螺X專業收納手提包
 
     # --- 對戰盤 / 豪華對戰套裝組 ---
-    "BX-07": 750,  # 極限對戰盤
-    "BX-10": 750,  # X型對戰盤
+    "BX-07": 1795, # 極限激戰初始組 (含對戰盤+蒼龍神劍+發射器+握把)
+    "BX-10": 750,  # X型對戰盤 (單盤)
     "BX-32": 899,  # 廣域對戰盤
     "BX-17": 1299, # 極限衝擊對戰組
     "BX-37": 1498, # 雙重極限衝擊戰鬥盤豪華版
@@ -91,18 +91,18 @@ def get_official_price_and_limit(name: str, fallback_price: Optional[float] = No
         # 2. 任何豪華對戰組 ➔ 官方原價 NT$ 1498 (上限 NT$ 1648)
         elif "豪華" in name_upper or "對戰組" in name_upper or "戰鬥盤組" in name_upper:
             official_price = 1498
-        # 3. 專業收納箱 ➔ 官方原價 NT$ 1199 (上限 NT$ 1319)
+        # 3. 專業收納箱 ➔ 官方原價 NT$ 850 (上限 NT$ 935)
         elif "收納" in name_upper or "手提" in name_upper or "提包" in name_upper or "提箱" in name_upper:
-            official_price = 1199
+            official_price = 850
         # 4. 單純戰鬥盤 ➔ 官方原價 NT$ 750 (上限 NT$ 825)
         elif "對戰盤" in name_upper or "戰鬥盤" in name_upper:
             official_price = 750
         # 5. UX 系列單陀螺 ➔ 官方原價 NT$ 550 (上限 NT$ 605)
         elif "UX" in name_upper:
             official_price = 550
-        # 6. 復刻紀念款 ➔ 官方原價 NT$ 750 (上限 NT$ 825)
+        # 6. 復刻紀念款 ➔ 官方原價 NT$ 350 (上限 NT$ 385)
         elif "BXG" in name_upper or "紀念" in name_upper or "復刻" in name_upper:
-            official_price = 750
+            official_price = 350
         # 7. 標準單顆陀螺 ➔ 官方原價一律鎖定 NT$ 399 (上限 NT$ 439)
         else:
             official_price = 399

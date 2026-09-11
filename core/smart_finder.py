@@ -57,11 +57,11 @@ HOT_PICKS = {
         {"model": "BX-24", "name": "隨機強化組Vol.2 (雙足翼龍)", "desc": "超搶手罕見雙刀刃款", "official_price": 399},
     ],
     "🎁 限定紀念與對戰配件": [
-        {"model": "BX-25", "name": "戰鬥陀螺X 專業收納手提包", "desc": "全台常態缺貨手提箱神物", "official_price": 1199},
+        {"model": "BX-25", "name": "戰鬥陀螺X 專業收納手提包", "desc": "全台常態缺貨手提箱神物", "official_price": 850},
         {"model": "BX-37", "name": "雙重極限衝擊戰鬥盤豪華組", "desc": "雙軌道超加速對戰套裝", "official_price": 1498},
-        {"model": "BX-07", "name": "極限對戰盤 (單盤)", "desc": "標準 X 賽事必備加速齒輪盤", "official_price": 750},
-        {"model": "BXG-01", "name": "復刻紀念款 烈焰飛鳳S", "desc": "初代爆轉陀螺經典復刻限定版", "official_price": 750},
-        {"model": "BXG-04", "name": "復刻紀念款 銀牙烈虎S", "desc": "初代爆轉白虎復刻限定版", "official_price": 750},
+        {"model": "BX-07", "name": "極限激戰初始組 (含盤與天劍豪華組)", "desc": "標準 X 賽事必備加速齒輪套裝", "official_price": 1795},
+        {"model": "BXG-01", "name": "復刻紀念款 烈焰飛鳳S", "desc": "初代爆轉陀螺經典復刻限定版", "official_price": 350},
+        {"model": "BXG-04", "name": "復刻紀念款 銀牙烈虎S", "desc": "初代爆轉白虎復刻限定版", "official_price": 350},
         {"model": "BXG-47", "name": "復刻限定 暴風天馬3 (BX00)", "desc": "鋼鐵奇兵情懷天馬復刻版", "official_price": 999},
     ]
 }

@@ -13,15 +13,15 @@ monitor:
 targets:
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 BXG-04 銀牙烈虎S 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9OWV
-  max_price: 825
+  max_price: 385
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 BXG-01 烈焰飛鳳S 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K9OX4
-  max_price: 825
+  max_price: 385
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X BX-07 極限激戰初始組 戰鬥盤 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPD
-  max_price: 825
+  max_price: 1975
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X世代 BXG-42 夜藍騎士圓甲 限定版 藍色小籠包 UX-00
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900KAH2G
@@ -49,7 +49,7 @@ targets:
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 BX-00 5-60GF軸 鮫鯊鋒鰭 BXG-06 限定版 深海藍
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K6GN8
-  max_price: 825
+  max_price: 385
   enabled: true
 - name: Takara Tomy Beyblade 戰鬥陀螺 X 世代 BX-00 蒼穹龍神透明版 透明龍神
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K8UL5
@@ -153,7 +153,7 @@ targets:
   enabled: true
 - name: BX-25 戰鬥陀螺X專業收納包
   url: https://24h.pchome.com.tw/prod/DEASR1-B900H2BID
-  max_price: 1319
+  max_price: 935
   enabled: true
 - name: BX-37 雙重極限衝擊戰鬥盤豪華組
   url: https://www.toysrus.com.tw/zh-tw/beyblade-bx-37-dual-extreme-impact-combat-disk-deluxe-edition-10058492.html
@@ -177,7 +177,7 @@ targets:
   enabled: true
 - name: 日本 戰鬥陀螺 BXG-04 銀牙烈虎S  BEYBLADE X
   url: https://24h.pchome.com.tw/prod/DEASR1-B900HGAF2
-  max_price: 825
+  max_price: 385
   enabled: true
 - name: 戰鬥陀螺 BX00 暴風天馬3 7-70RA 右旋 BXG-47 BEYBLADE X
   url: https://24h.pchome.com.tw/prod/DEASR1-B900K8AQY
@@ -185,7 +185,7 @@ targets:
   enabled: true
 - name: 日本戰鬥陀螺 BXG-01 烈焰飛鳳SBB91050 BEYBLADE X公司貨 TAKARA TOMY
   url: https://24h.pchome.com.tw/prod/DEASR1-B900GK0S2
-  max_price: 825
+  max_price: 385
   enabled: true
 - name: Beyblade X 戰鬥陀螺X BX-05 魔導幻箭 魔法箭 巫師之箭 4-80O 組裝強化包 (美版)
   url: https://24h.pchome.com.tw/prod/DEASSW-A900K80FB
@@ -261,7 +261,7 @@ targets:
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 戰鬥陀螺 X 專業收納包 BX-25 黑色 齒輪箱 正版
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K1F6M
-  max_price: 1319
+  max_price: 935
   enabled: true
 - name: Beyblade 戰鬥陀螺 X世代 BX-27 幻神護甲 隨機強化組 (韓版)
   url: https://24h.pchome.com.tw/prod/DGBJQR-A900K3IL5
@@ -277,7 +277,7 @@ targets:
   enabled: true
 - name: 戰鬥陀螺 BX-57 3V3 對戰收納盒 黑色版 台版
   url: https://24h.pchome.com.tw/prod/DEASR1-B900KCSX5
-  max_price: 1319
+  max_price: 935
   enabled: true
 - name: TAKARATOMY BEYBLADE X 戰鬥陀螺 X 世代 BX-37 雙重極限衝擊戰鬥盤 豪華組 電動盤商品 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPR
@@ -297,7 +297,7 @@ targets:
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 X 專業收納包 BX-43 白色 齒輪箱 正版 陀螺包 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JPV
-  max_price: 1319
+  max_price: 935
   enabled: true
 - name: Takara Tomy Beyblade X 戰鬥陀螺 X 世代 BX-21三陀螺套裝 地獄鏈甲組合 陀螺
   url: https://24h.pchome.com.tw/prod/DSBE2T-A900K5JOX
@@ -453,7 +453,7 @@ targets:
   enabled: true
 - name: 【TAKARA TOMY】戰鬥陀螺 BX-00 蒼龍神劍 V2 3-60F 攻擊型 BEYBLADE X BXG-49 台版附QRCODE
   url: https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=15649308
-  max_price: 825
+  max_price: 385
   enabled: true
 cronjob_org:
   api_key: ''
